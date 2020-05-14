@@ -1,26 +1,120 @@
 \documentclass{article}
 \usepackage[round]{natbib}
 
+\usepackage{listings}
+
+\lstset{language=Python}
 
 % local definitions
 \newcommand{\msprime}[0]{\texttt{msprime}}
+\newcommand{\ms}[0]{\texttt{ms}}
 \newcommand{\stdpopsim}[0]{\texttt{stdpopsim}}
 
 
 \begin{document}
 
-\title{msprime 1.0: an efficient and extensible coalescent simulation framework}
+\title{Describing demographic models is hard}
 \author{A permutation of (AR, DN, JK, SG)}
+\maketitle
 
 \abstract{
+We describe two errors made in defining population genetic models using the
+\msprime\ coalescent simulator.
 
 }
 
 \section*{Introduction}
 
-The \msprime~\citep{kelleher2016efficient} coalescent simulator is now quite
-widely used.
+The \msprime\ coalescent simulator~\citep{kelleher2016efficient,kelleher2020coalescent}
+is now quite widely used. The large increases in efficiency over the classical
+\ms\ program~\citep{hudson2002generating} make it feasible to simulate large
+samples of whole chromosomes for the first time. Another distinct advantage
+of \msprime\ is the Python API that is its primary interface, greatly
+increasing the flexibility and efficiency over the standard approach of
+text-based command line interfaces. In particular, programs like \ms\
+required users to specify cryptic command line options to describe demographic
+models [JK: maybe include an example ms command line?]. Particularly for
+the large models we are using today, these are not comprehensible for humans.
+The Python API for \msprime\ is a great improvement, allowing the user to
+state models in a documented and reproducible manner. [JK: maybe show
+the same model as described above in msprime notation?]
 
+Describing these models of population history is still hard and error
+prone, however. In this note we discuss how two poor design decisions
+in \msprime's demography API lead to errors being made, which ended
+up in the scientific record.
+
+\section{A bad tutorial example}
+
+To illustrate the demography API, \msprime\ included a description of the
+three population Out-of-Africa model~\citep{gutenkunst2009inferring}
+as part of its tutorial documentation. This example model, however,
+was not correctly implemented.
+
+[What's wrong with the model, and how does this differ from the original. Some
+analysis.]
+
+This model was subsequently copied
+several times and used in papers [JK: do we want to estimate how
+many times it was copied? A quick search on github suggests around 30
+times].
+
+Arguably, this error occured because of a poor API design choice.
+The MassMigration event is confusing and poorly explained. In
+\msprime\ 1.0 we're introducing a PopulationSplit event, which allows
+such models to be described more declaritively.
+
+\section{A missing parameter}
+
+[Description of what went wrong in the AJHG paper~\citep{martin2017human}.
+Some analysis of how this affects the conclusions of the paper.]
+
+[How was the error found? I wonder if the reason that Alicia didn't
+do any basic checks on the simulation output was because it was
+so massive. Until recently we couldn't do things like compute Fst, etc
+on the tree sequences. Still, good enough reason to run small simulations
+first to make sure that you're doing something sensible.]
+
+This error was clearly caused by poor API design. By forcing the user to
+pass around three separate parameters to describe the demographic model,
+it's inviting simple mistakes such as this. In \msprime\ 1.0 we introduce
+a Demography class, which wraps these three parameters.
+Thus, instread of writing
+\begin{lstlisting}[frame=single]
+dbg = msprime.DemographyDebugger(
+    population_configurations=population_configurations,
+    migration_matrix=migration_matrix,
+    demographic_events=demographic_events)
+dbg.print_history()
+ts = msprime.simulate(
+    population_configurations=population_configurations,
+    migration_matrix=migration_matrix,
+    demographic_events=demographic_events)
+\end{lstlisting}
+we would now write
+\begin{lstlisting}[frame=single]
+dbg = demography.debug()
+dbg.print_history()
+ts = msprime.simulate(demography=demography)
+\end{lstlisting}
+
+\section{Conclusions}
+
+Stuff to mention in no particular order:
+\begin{itemize}
+\item Defining demographic models is hard, and we need all the help we can get.
+   We really need \stdpopsim.
+\item If you do have to implement your own models, make sure that it is
+verified. Getting someone else to implement it is a good approach (following
+stdpopsim's QC procedure.)
+\item It's really important to do some basic sanity checking on your
+simulations. If your simulations are really big, do some small sims first and
+analysis on this to make that basic properties hold.
+\item Openness is essential. We only know about these errors because of
+open code and open source development processes. There must be many, many more
+out there.
+\item API design matters! A lot!!
+\end{itemize}
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
