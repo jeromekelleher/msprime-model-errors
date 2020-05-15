@@ -46,7 +46,7 @@ up in the scientific record.
 
 \section{A bad tutorial example}
 
-To illustrate the demography API, \msprime\ included a description of the
+To illustrate the demography API, \msprime\ included a description of a widely-used
 three population Out-of-Africa model~\citep{gutenkunst2009inferring}
 as part of its tutorial documentation. This example model, however,
 was not correctly implemented.
@@ -66,18 +66,28 @@ such models to be described more declaritively.
 
 \section{A missing parameter}
 
-[Description of what went wrong in the AJHG paper~\citep{martin2017human}.
-Some analysis of how this affects the conclusions of the paper.]
+In another publication using this model~\citep{martin2017human}, 
+another error crept in: the model itself was defined as suggested 
+in the documentation, and tested using model visualization and 
+debugging tools. After these checks were performed, however, the simulation 
+itself was finally performed with an incorrect parameter, leading to a vast 
+overestimate of the divergence across human populations. 
 
-[How was the error found? I wonder if the reason that Alicia didn't
-do any basic checks on the simulation output was because it was
-so massive. Until recently we couldn't do things like compute Fst, etc
-on the tree sequences. Still, good enough reason to run small simulations
-first to make sure that you're doing something sensible.]
+In this case the error had a large effect on the simulation output and 
+the conclusions of the analysis. This simulation was performed to assess 
+the transferabilty of polygenic risk scores across human populations. 
 
-This error was clearly caused by poor API design. By forcing the user to
-pass around three separate parameters to describe the demographic model,
-it's inviting simple mistakes such as this. In \msprime\ 1.0 we introduce
+Unfortunately, whereas the correct model suggests a mean $F_{ST}$ of 
+XXX across the three population, the simulated model generated an $F_{ST}$ of 
+XXX, exaggerating the difficulty in transferring genetic risk across populations (the difficulty still exists, Figure X).  The resulting
+publication has been influential in the discussion of health inequalities and 
+genomics, [[with over 350 citations since 2017 ?]]. 
+
+This particular error suggests three lessons. 
+
+First, the msprime API design was poorly designed, requiring the user to pass
+three separate parameters to specify a demographic model. 
+ In \msprime\ 1.0 we introduce
 a Demography class, which wraps these three parameters.
 Thus, instread of writing
 \begin{lstlisting}[frame=single]
@@ -96,7 +106,19 @@ we would now write
 dbg = demography.debug()
 dbg.print_history()
 ts = msprime.simulate(demography=demography)
-\end{lstlisting}
+\end{lstlisting}.
+
+Second, testing of the final simulated data is important. This can be challenging, 
+because the amount of simulated data can be large. However, recent progress in 
+computing summary statistics from tree sequence data \cite{} can make this easier. 
+Even if the entire simulation data cannot be easily evaluated, subsets of the data 
+can be examined to identify large error.  
+
+Third, open data analysis pipelines are necessary for the self-correcting nature of science. 
+This subtle error of large effect was only discovered as one of us was trying to take
+advantage of the simulation pipeline developed in~\citep{martin2017human} to pursue 
+additional analyses on a similar topic. We identified the bug by tracing down an unexpected 
+result in our analysis.  
 
 \section{Conclusions}
 
