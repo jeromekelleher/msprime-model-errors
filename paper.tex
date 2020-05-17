@@ -1,7 +1,12 @@
 \documentclass{article}
 \usepackage[round]{natbib}
 
+\usepackage{fullpage}
 \usepackage{listings}
+\usepackage{url}
+
+\usepackage{graphicx}
+\usepackage{color}
 
 \lstset{language=Python}
 
@@ -10,6 +15,7 @@
 \newcommand{\ms}[0]{\texttt{ms}}
 \newcommand{\stdpopsim}[0]{\texttt{stdpopsim}}
 
+\newcommand{\aprcomment}[1]{{\textcolor{blue}{APR: #1}}}
 
 \begin{document}
 
@@ -18,19 +24,25 @@
 \maketitle
 
 \abstract{
-We describe two errors made in defining population genetic models using the
-\msprime\ coalescent simulator.
-
+Simulation plays a central role in population genomics studies. Recent years
+have seen rapid improvements in software efficiency that make it possible to simulate 
+large genomic regions for many individuals sampled from large numbers of populations.
+The increase in complexity of possible demographic models also provides additional ways
+that we can get their implementation wrong. Here we describe two errors made in 
+defining population genetic models using the \msprime\ coalescent simulator that have 
+found their way into downstream analyses.
+We highlight a few ways that these errors have affected analyses based on these simulations
+and suggest measures that should be taken when simulating complicated demography.
 }
 
-\section*{Introduction}
+\section{Introduction}
 
 The \msprime\ coalescent simulator~\citep{kelleher2016efficient,kelleher2020coalescent}
 is now quite widely used. The large increases in efficiency over the classical
 \ms\ program~\citep{hudson2002generating} make it feasible to simulate large
 samples of whole chromosomes for the first time. Another distinct advantage
 of \msprime\ is the Python API that is its primary interface, greatly
-increasing the flexibility and efficiency over the standard approach of
+increasing the flexibility and ease of use over the standard approach of
 text-based command line interfaces. In particular, programs like \ms\
 required users to specify cryptic command line options to describe demographic
 models [JK: maybe include an example ms command line?]. Particularly for
@@ -39,106 +51,189 @@ The Python API for \msprime\ is a great improvement, allowing the user to
 state models in a documented and reproducible manner. [JK: maybe show
 the same model as described above in msprime notation?]
 
-Describing these models of population history is still hard and error
-prone, however. In this note we discuss how two poor design decisions
+Implementing multi-population models of demographic history is still hard and error
+prone. In this note we discuss how two poor design decisions
 in \msprime's demography API lead to errors being made, which ended
-up in the scientific record.
+up in the scientific record. 
+\aprcomment{You could argue it is poor API design, and I see that.. but I also
+think there is something more to be said about best practices in implementing simulations, 
+including your own various verifications and sanity checks, and the need for robust
+implementation of commonly used models (stdpopsim). I do think that in the end
+the responsibility lies with the user in making sure that everything is implemented
+properly.}
 
 \section{A bad tutorial example}
 
 To illustrate the demography API, \msprime\ included a description of a widely-used
 three population Out-of-Africa model~\citep{gutenkunst2009inferring}
-as part of its tutorial documentation. This example model, however,
-was not correctly implemented.
+as part of its tutorial documentation. In this model (Fig.~\ref{fig:ooa_stats}A),
+Eurasian (CEU and CHB) and African (YRI) populations split from each other in the deep past, 
+followed by a more recent split of European and Asian populations, with variable rates of 
+continuous migration between each of the populations. However, the implementation in the 
+\msprime\ tutorial was incorrect. Namely, at the time of the split between African and Eurasian
+populations, migration between those two populations was allowed to continue for all time into the
+past, resulting in population structure when there should have been just a single 
+randomly mating ancestral population (Fig.~\ref{fig:ooa_stats}B).
 
-[What's wrong with the model, and how does this differ from the original. Some
-analysis.]
+Fortunately, the effect of this error is subtle. Population sizes and structure since the time of 
+the split are unaffected, so that differences in expected $F_{ST}$ are negligible between 
+the correct and incorrect model. However, the distribution of $T_{MRCA}$ in the deep past
+is distorted, and this results in an inflation of expected heterozygosity in each of the three
+populations by up to $4\%$ (Fig.~\ref{fig:ooa_stats}C-G).
 
 This model was subsequently copied
 several times and used in papers [JK: do we want to estimate how
 many times it was copied? A quick search on github suggests around 30
 times].
 
-Arguably, this error occured because of a poor API design choice.
-The MassMigration event is confusing and poorly explained. In
-\msprime\ 1.0 we're introducing a PopulationSplit event, which allows
-such models to be described more declaritively.
+Arguably, this error occurred because of a poor API design choice.
+Currently, to model a population split, the user must use a MassMigration event to move 
+lineage from one population to another and then also remember to turn off migration
+between those populations at the same time.
+The release of \msprime\ 1.0 will introduce a \texttt{PopulationSplit} event, which allows
+such models to be described more declaratively.
 
 \section{A missing parameter}
 
 In another publication using this model~\citep{martin2017human}, 
-another error crept in: the model itself was defined as suggested 
-in the documentation, and tested using model visualization and 
-debugging tools. After these checks were performed, however, the simulation 
-itself was finally performed with an incorrect parameter, leading to a vast 
-overestimate of the divergence across human populations. 
+a separate error was introduced: the model itself was defined as suggested 
+in the documentation (using somewhat more recently inferred parameters of that same
+model~\citep{gravel2011demographic}) and inspected using the \msprime\ 
+debugging tools. After these initial checks were made, however, the simulation 
+was performed without passing the parameter of demographic events,
+so that the three populations remain separated with low levels of migration and
+never merge as expected (Fig~\ref{fig:prs}A),
+leading to a vast overestimate of the divergence across human populations. 
 
 In this case the error had a large effect on the simulation output and 
-the conclusions of the analysis. This simulation was performed to assess 
-the transferabilty of polygenic risk scores across human populations. 
+the conclusions of the analysis. This simulation was performed to assess the 
+transferability of polygenic risk scores across human populations, in particular to
+explore how human demographic history and population structure affects our ability
+to predict genetic risk in populations of different ancestry than the originally studied
+population. The resulting publication has been influential in the discussion of 
+health inequalities and genomics, with over 350 citations since 2017. 
 
-Unfortunately, whereas the correct model suggests a mean $F_{ST}$ of 
-XXX across the three population, the simulated model generated an $F_{ST}$ of 
-XXX, exaggerating the difficulty in transferring genetic risk across populations (the difficulty still exists, Figure X).  The resulting
-publication has been influential in the discussion of health inequalities and 
-genomics, [[with over 350 citations since 2017 ?]]. 
+Unfortunately, whereas the correct model predicts a mean $F_{ST}$ of 
+$0.05 - 0.10$ across the three population, the simulated model generated $F_{ST}$
+ranging between $0.3 - 0.6$, depending on the populations considered.
+This exaggerates the role that demography plays in limiting the transferability
+of genetic risk scores across populations. While this difficulty still exists 
+(Fig.~\ref{fig:prs}), risk prediction in each population is significantly improved 
+when using the correct demographic model (compare to Fig.~5 in~\citet{martin2017human}.
 
-This particular error suggests three lessons. 
-
-First, the msprime API design was poorly designed, requiring the user to pass
+These errors suggests three lessons. 
+First, the msprime API design was poorly designed, requiring the user to pass 
 three separate parameters to specify a demographic model. 
- In \msprime\ 1.0 we introduce
+In \msprime\ 1.0 we introduce
 a Demography class, which wraps these three parameters.
-Thus, instread of writing
+Thus, instead of writing
 \begin{lstlisting}[frame=single]
 dbg = msprime.DemographyDebugger(
-    population_configurations=population_configurations,
-    migration_matrix=migration_matrix,
-    demographic_events=demographic_events)
+  population_configurations=population_configurations,
+  migration_matrix=migration_matrix,
+  demographic_events=demographic_events)
 dbg.print_history()
 ts = msprime.simulate(
-    population_configurations=population_configurations,
-    migration_matrix=migration_matrix,
-    demographic_events=demographic_events)
+  population_configurations=population_configurations,
+  migration_matrix=migration_matrix,
+  demographic_events=demographic_events)
 \end{lstlisting}
 we would now write
 \begin{lstlisting}[frame=single]
 dbg = demography.debug()
 dbg.print_history()
 ts = msprime.simulate(demography=demography)
-\end{lstlisting}.
+\end{lstlisting}
 
 Second, testing of the final simulated data is important. This can be challenging, 
 because the amount of simulated data can be large. However, recent progress in 
-computing summary statistics from tree sequence data \cite{} can make this easier. 
+computing summary statistics from tree sequence data can make this easier~\cite{ralph2020efficiently}. 
 Even if the entire simulation data cannot be easily evaluated, subsets of the data 
 can be examined to identify large error.  
 
 Third, open data analysis pipelines are necessary for the self-correcting nature of science. 
-This subtle error of large effect was only discovered as one of us was trying to take
-advantage of the simulation pipeline developed in~\citep{martin2017human} to pursue 
+This subtle error of large effect was only discovered through our own re-use of
+the simulation pipeline developed in~\citep{martin2017human} to pursue 
 additional analyses on a similar topic. We identified the bug by tracing down an unexpected 
-result in our analysis.  
+result in our analysis. This error could not have been found and corrected without the open
+publication of the entire analysis pipeline from the original study.
 
 \section{Conclusions}
 
-Stuff to mention in no particular order:
+Defining demographic models is error prone, and incorrect implementation can  
+impact downstream analysis and interpretation. The errors that we highlighted here have 
+exposed some weaknesses of the current \msprime\ API, which will be fixed in an 
+upcoming release. Recognition of these difficulties is also a 
+primary motivating factor in efforts to standardize and vet demographic model 
+implementation in \stdpopsim~\cite{adrion2019community}, with quality-controlled 
+models and simulation resources for a growing number of commonly studied species.
+
+If you do need to implement your own demographic model, we recommend that steps are taken to 
+verify its correctness. A second pair of eyes (code review) or independent implementation 
+can go a long way in catching subtle bugs (this is the approach taken by \stdpopsim). It is also 
+very important to perform some basic statistical verification of the simulation, such as checking 
+output heterozygosity and $F_{ST}$ against expectations. If simulations are large so that 
+statistical validation is burdensome, you can instead simulate over a smaller genome length 
+and with fewer individuals to make sure basic properties hold. For example, a routine statistical 
+checks of $F_{ST}$ would surely have caught the error in~\citet{martin2017human}. 
+\aprcomment{too snarky...? but I think it's an important point}
+
+Finally, openness is essential. We only know about these errors because of open code and 
+open source development processes. \aprcomment{if we criticize the Martin paper for not
+checking basic statistics, we can at least give a kudos for putting the pipeline entirely on
+github here}. There must be many, many more mistakes out there, and an extra bit of care 
+is warranted to catch and correct such errors. 
+
+\section{Methods}
+
 \begin{itemize}
-\item Defining demographic models is hard, and we need all the help we can get.
-   We really need \stdpopsim.
-\item If you do have to implement your own models, make sure that it is
-verified. Getting someone else to implement it is a good approach (following
-stdpopsim's QC procedure.)
-\item It's really important to do some basic sanity checking on your
-simulations. If your simulations are really big, do some small sims first and
-analysis on this to make that basic properties hold.
-\item Openness is essential. We only know about these errors because of
-open code and open source development processes. There must be many, many more
-out there.
-\item API design matters! A lot!!
+\item Figure 1: plotted using \texttt{demography} package (\url{https://github.com/apragsdale/demography}),
+allele frequency spectrum computed using \texttt{moments}~\cite{jouganous2017inferring}, and LD curves
+computed using \texttt{moments.LD}~\cite{ragsdale2019models}. $F_{ST}$ and other statistics computed
+from the expected AFS.
+\item Figure 2: original pipeline from \url{https://github.com/armartin/ancestry_pipeline/blob/master/simulate_prs.py},
+reran the experiment, with code available at \url{https://github.com/apragsdale/PRS}
 \end{itemize}
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
+
+\pagebreak
+
+\begin{figure}[ht]
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics{figures/ooa_expected_stats.pdf}}
+\caption{\textbf{Expected diversity statistics under the \citet{gutenkunst2009inferring} model}.
+    \textbf{(A)} The correctly implemented model.
+    \textbf{(B)} The incorrectly implemented model from the \msprime\ tutorial, with migration continuing
+    into the past.
+    \textbf{(C)} Marginal allele frequency spectra under the two models. Heterozygosity in the incorrect model
+    is inflated by $~3.5\%$, though the general shape of the distributions are qualitatively similar.
+    \textbf{(D)} Similarly, the increased heterozygosity leads to excess $D^2$, though the LD-decay is
+    qualitatively similar between models.
+    \textbf{(E-G)} True size history for each population plotted against the expected size history from 
+    the expected inverse coalescence rates.
+}
+\label{fig:ooa_stats}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics{figures/prs_fig.pdf}}
+\caption{\textbf{The transferability of PRS under neutrality}.
+    \textbf{(A)} In~\citet{martin2017human}, the simulated demographic model did not apply demographic
+    events in the past, so continental populations were simulated as isolated with low levels of migration
+    for all time.
+    \textbf{(B-G)} We repeated the simulation experiment in~\cite{martin2017human} using the correct 
+    demographic model and found that risk prediction was greatly improved over what was originally 
+    reported in all three populations.
+    \aprcomment{directly compare to figure 5 in the original paper}
+    \aprcomment{to do: fill in caption}
+}
+\label{fig:prs}
+\end{center}
+\end{figure}
+
 
 \end{document}
