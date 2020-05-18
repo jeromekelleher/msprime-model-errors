@@ -16,6 +16,7 @@
 \newcommand{\stdpopsim}[0]{\texttt{stdpopsim}}
 
 \newcommand{\aprcomment}[1]{{\textcolor{blue}{APR: #1}}}
+\newcommand{\dncomment}[1]{{\textcolor{red}{Dom: #1}}}
 
 \begin{document}
 
@@ -47,13 +48,23 @@ text-based command line interfaces. In particular, programs like \ms\
 required users to specify cryptic command line options to describe demographic
 models [JK: maybe include an example ms command line?]. Particularly for
 the large models we are using today, these are not comprehensible for humans.
+\dncomment{That's a pretty strong statement, might be good to give an example 
+or describe what it would look like (``specifying the gravel ooa model would take 
+10K lines of parameter specification''), or just say that its much less intuitive and 
+so more error prone}
 The Python API for \msprime\ is a great improvement, allowing the user to
 state models in a documented and reproducible manner. [JK: maybe show
 the same model as described above in msprime notation?]
 
 Implementing multi-population models of demographic history is still hard and error
-prone. In this note we discuss how two poor design decisions
-in \msprime's demography API lead to errors being made, which ended
+prone. In this note we discuss how two poor
+\dncomment{Overly harsh I think, could drop this word} design decisions
+in \msprime's demography API lead
+\dncomment{Also not fair I don't think. I mean Alicia's bug hints at a lack of validation that 
+could have happened at any stage in the pipeline, and did happen elsewhere 
+I believe. Could make this more positive by describing how these design choices 
+could be improved to reduce the chance of errors going unnoticed/eliminate 
+some entirely} to errors being made, which ended
 up in the scientific record. 
 \aprcomment{You could argue it is poor API design, and I see that.. but I also
 think there is something more to be said about best practices in implementing simulations, 
@@ -84,14 +95,19 @@ populations by up to $4\%$ (Fig.~\ref{fig:ooa_stats}C-G).
 This model was subsequently copied
 several times and used in papers [JK: do we want to estimate how
 many times it was copied? A quick search on github suggests around 30
-times].
+times]. \dncomment{I like this as a rough metric, like ``the number of copies 
+is unknown, but we found x copies on github''}
 
-Arguably, this error occurred because of a poor API design choice.
+Arguably, this error occurred because of a poor 
+\dncomment{Again I'd go positive. If msprime is so bad, god help the rest of us. 
+Something like ``To model a population split in the original API, ...''?}
+API design choice.
 Currently, to model a population split, the user must use a MassMigration event to move 
 lineage from one population to another and then also remember to turn off migration
 between those populations at the same time.
 The release of \msprime\ 1.0 will introduce a \texttt{PopulationSplit} event, which allows
-such models to be described more declaratively.
+such models to be described more declaratively. 
+\dncomment{Strikes me as a bit programmer-centric. Maybe intuitively? Simply?}
 
 \section{A missing parameter}
 
@@ -122,7 +138,12 @@ of genetic risk scores across populations. While this difficulty still exists
 when using the correct demographic model (compare to Fig.~5 in~\citet{martin2017human}.
 
 These errors suggests three lessons. 
-First, the msprime API design was poorly designed, requiring the user to pass 
+First, the msprime API design was poorly designed, 
+\dncomment{Still don't like this word. Again if msprime is poor then most bioinformatics 
+software is a dumpster fire. What about ``...msprime API can be adapted to 
+simplify common use-cases''? A bit clunky but maybe along those lines
+}
+requiring the user to pass 
 three separate parameters to specify a demographic model. 
 In \msprime\ 1.0 we introduce
 a Demography class, which wraps these three parameters.
@@ -160,7 +181,8 @@ publication of the entire analysis pipeline from the original study.
 
 \section{Conclusions}
 
-Defining demographic models is error prone, and incorrect implementation can  
+Defining demographic models is error prone \dncomment{Just a thought, but alternatively could say 
+``Demographic models are complex''}, and incorrect implementation can  
 impact downstream analysis and interpretation. The errors that we highlighted here have 
 exposed some weaknesses of the current \msprime\ API, which will be fixed in an 
 upcoming release. Recognition of these difficulties is also a 
@@ -175,7 +197,10 @@ very important to perform some basic statistical verification of the simulation,
 output heterozygosity and $F_{ST}$ against expectations. If simulations are large so that 
 statistical validation is burdensome, you can instead simulate over a smaller genome length 
 and with fewer individuals to make sure basic properties hold. For example, a routine statistical 
-checks of $F_{ST}$ would surely have caught the error in~\citet{martin2017human}. 
+checks of $F_{ST}$ would surely 
+\dncomment{I'd go with either this or 'routine' but maybe not both
+}
+have caught the error in~\citet{martin2017human}. 
 \aprcomment{too snarky...? but I think it's an important point}
 
 Finally, openness is essential. We only know about these errors because of open code and 
@@ -225,6 +250,8 @@ reran the experiment, with code available at \url{https://github.com/apragsdale/
     \textbf{(A)} In~\citet{martin2017human}, the simulated demographic model did not apply demographic
     events in the past, so continental populations were simulated as isolated with low levels of migration
     for all time.
+    \dncomment{Might have been on your todos below but would help I think to have the correct model 
+    drawn out too (see now that you did in fig 1. I'd at least point to that to highlight the difference)}
     \textbf{(B-G)} We repeated the simulation experiment in~\cite{martin2017human} using the correct 
     demographic model and found that risk prediction was greatly improved over what was originally 
     reported in all three populations.
