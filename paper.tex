@@ -82,6 +82,7 @@ an additional population prior to the earliest split exchanging migrants with th
 (Fig.~\ref{fig:ooa_stats}B) but not contributing otherwise to present-day populations.  
 
 
+
 Fortunately, the effect of this additional 'ghost' population are subtle. Population sizes and structure since the time of
 the split are unaffected, so that differences in expected $F_{ST}$ are negligible between
 the correct and incorrect model. However, the presence of the ghost population increases
@@ -175,6 +176,13 @@ additional analyses on a similar topic. We identified the bug by tracing down an
 result in our analysis. This error could not have been found and corrected without the open
 publication of the entire analysis pipeline from the original study.
 
+Finally, from a genetics perspective, the corrected simulations indicate that the accuracy of genetic risk scores
+is still substantially reduced in understudied populations, supporting the main conclusion of~\citep{martin2017human}. 
+However, the reduction is much less pronounced than reported. In particular, we did not observe large
+differences in mean risk prediction across populations, as presented in~\citep{martin2017human} \sgcomment{check}.
+Thus genetic drift alone does not appear to induce large biases in mean predicted risk across ethnicities, at least for 
+the polygenic architectures considered here. \sgcomment{This might need some analytical backup} 
+
 \section{Conclusions}
 
 The implementation of complex demographic models is error prone, and such errors can 
@@ -224,24 +232,7 @@ and was rerun using corrected parameters, with code available at \url{https://gi
 
 \pagebreak
 
-\begin{figure}[ht]
-\begin{center}
-\makebox[\textwidth][c]{\includegraphics{figures/ooa_expected_stats.pdf}}
-\caption{\textbf{Expected diversity statistics under the \citet{gutenkunst2009inferring} model}.
-    \textbf{(A)} The correctly implemented model.
-    \textbf{(B)} The incorrectly implemented model from the \msprime\ tutorial, with migration continuing
-    into the past.
-    \textbf{(C)} Marginal allele frequency spectra under the two models. Heterozygosity in the incorrect model
-    is inflated by $~3.5\%$, though the general shape of the distributions are qualitatively similar.
-    \textbf{(D)} Similarly, the increased heterozygosity leads to excess $D^2$, though the LD-decay is
-    qualitatively similar between models.
-    \textbf{(E-G)} True size history for each population plotted against the expected size history from
-    the expected inverse coalescence rates.
-    \sgcomment{Not sure what the 1 in Figure 1b means. I would put the mass migration arrow in blue. }
-}
-\label{fig:ooa_stats}
-\end{center}
-\end{figure}
+
 
 \begin{figure}[ht]
 \begin{center}
