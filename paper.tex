@@ -77,15 +77,15 @@ followed by a more recent split of European and Asian populations, with variable
 continuous migration between each of the populations. However, the implementation in the
 \msprime\ tutorial was incorrect. Namely, at the time of the split between African and Eurasian
 populations, migration between those two populations was allowed to continue for all time into the
-past. Even though the population split was implemented correcly, the specified demographic model had 
-an additional ghost population prior to the earliest split (Fig.~\ref{fig:ooa_stats}B).
+past. Even though the population split was implemented correctly, the specified demographic model had 
+an additional population prior to the earliest split exchanging migrants with the ancestral population 
+(Fig.~\ref{fig:ooa_stats}B) but not contributing otherwise to present-day populations.  
 
-Fortunately, the effect of this error is subtle. Population sizes and structure since the time of
+Fortunately, the effect of this additional, 'ghost' population are subtle. Population sizes and structure since the time of
 the split are unaffected, so that differences in expected $F_{ST}$ are negligible between
-the correct and incorrect model. However, the presence of a ghost population
-changes the distribution of $T_{MRCA}$ in the deep past
-is distorted and increases expected heterozygosity in each of the three
-populations by up to $4\%$ (Fig.~\ref{fig:ooa_stats}C-G).
+the correct and incorrect model. However, the presence of the ghost population increases
+the effective population size and thus the distribution of $T_{MRCA}$ and the expected 
+heterozygosity in each of the three populations by up to $4\%$ (Fig.~\ref{fig:ooa_stats}C-G).
 
 This model was subsequently copied
 several times and used in publications [JK: do we want to estimate how
