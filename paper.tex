@@ -79,7 +79,7 @@ Particularly for the large models we use today, these are not
 intuitive or comprehensible for humans.
 The Python API for \msprime\, by contrast, allows the user to
 state models in a more human-readable manner: 
-Example of model specification for the two softwares is provided in the Methods section. 
+an examplle of model specification for the two softwares is provided in the Methods section. 
 %\sgcomment{Other software, such as SLiM, 
 %have developed advanced user interfaces and even dedicated programming languages 
 %to facilitate the specification of various modes of evolution.\cite{}
@@ -102,7 +102,7 @@ three population Out-of-Africa model~\citep{gutenkunst2009inferring}
 as part of its tutorial documentation. In this model (Fig.~\ref{fig:ooa_stats}A),
 Eurasian (CEU and CHB) and African (YRI) populations split from each other in the deep past,
 followed by a more recent split of European and Asian populations, with variable rates of
-continuous migration between each of the populations. However, the implementation in the
+continuous migration between each of the populations. Regrettably, the implementation in the
 \msprime\ tutorial was incorrect. Before the time of the split of African and Eurasian
 populations, when there should have been just a single randomly mating population, migration was
 allowed to occur between the ancestral population and a second population with size equal to
@@ -158,7 +158,7 @@ a separate error was introduced: the model itself was defined as suggested
 in the documentation (using updated parameters
 from~\citet{gravel2011demographic}) and inspected
 using the \msprime\ debugging tools.
-After these initial checks were made, however, the simulation
+Despite these initial checks being made, the simulation
 was performed without passing the parameter of demographic events,
 so that the three populations
 never merged as expected and remained separated with low levels of migration (Fig~\ref{fig:prs}A),
@@ -203,7 +203,7 @@ and many bugs can be prevented by using more intuitive interfaces.
 Whereas the original \msprime\ API required the user to pass
 three separate parameters to specify a demographic model, \msprime~ver.~1.0
 will introduce a Demography class, which wraps these three parameters.
-Thus, instead of writing
+Instead of writing
 \begin{lstlisting}[frame=single]
 dbg = msprime.DemographyDebugger(
   population_configurations=population_configurations,
@@ -242,9 +242,10 @@ general diversity patterns are sound. Such tests likely would have caught the er
 in~\citet{martin2017human}.
 
 Graphical inspection of demographic models can also help identify issues, especially if 
-visualization can be automated. msprime does contain a demography debugging tool summarizing 
+visualization can be automated. \msprime\ does contain a demography debugging tool summarizing 
 demographic events occurring over time, and various efforts are underway to facilitate 
-the specification and visualization of population genetics models \cite{zhou2018popdemog}, \sgcomment{Mention Aaron's code and Slim?}.
+the specification and visualization of population genetics models, such as~\citet{zhou2018popdemog}
+and the \texttt{demography} package used in this paper.
 
 
 Finally, openness is essential to the self-correcting nature of science.
