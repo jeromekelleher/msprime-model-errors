@@ -24,7 +24,7 @@
 
 \begin{document}
 
-\title{Describing demographic models is hard}
+\title{Lessons learned from buggy models of human history}
 \author[1]{Aaron P. Ragsdale}
 \author[1]{Dominic Nelson}
 \author[1,$\star$]{Simon Gravel}
@@ -47,7 +47,7 @@ Lessons learned from bugs in population genetics models
 Simulation plays a central role in population genomics studies. Recent years
 have seen rapid improvements in software efficiency that make it possible to simulate
 large genomic regions for many individuals sampled from large numbers of populations.
-The increase in complexity of possible demographic models also provides additional ways
+\aprcomment{fix this sentence ->} The increase in complexity of possible demographic models also provides additional ways
 that we can get their implementation wrong. Here we describe two errors made in
 defining population genetic models using the \msprime\ coalescent simulator that have
 found their way into the published record.
@@ -55,7 +55,7 @@ We discuss how these errors have affected analyses and suggest recommendations
 for software developers and users to reduce the risk of such errors.
 }
 
-\section{Introduction}
+\section*{Introduction}
 
 \sgcomment{In the race to build more realistic and useful simulations of genetic diversity, 
 scientific software developers often focus on computational speed and biological realism. 
@@ -92,7 +92,7 @@ In light of these implementation errors, we discuss improvements to \msprime's A
 discoveries and more general best practices for implementing and simulating complex multi-population
 demography.
 
-\section{A bad tutorial example}
+\section*{A bad tutorial example}
 
 To illustrate the demography API, \msprime\ included a description of a widely-used
 three population Out-of-Africa model~\citep{gutenkunst2009inferring}
@@ -112,7 +112,7 @@ Fortunately, the effects of this error are subtle.
 Population sizes and structure since the time of
 the split are unaffected, so that differences in expected $F_{ST}$ are negligible between
 the correct and incorrect model. However, the ancient structure distorts the distribution
-of early $T_{MRCAs}$. The extraneous ancient population increases increases the long-term effective 
+of early $T_{MRCAs}$. The extraneous ancient population increases the long-term effective 
 population size, leading to heterozygosity in contemporary populations
 increased by roughly $4\%$ over expectations from the correctly specified 
 model (Fig.~\ref{fig:ooa_stats}E-F).
@@ -149,7 +149,7 @@ The release of \msprime\ version~1.0 will introduce a \texttt{PopulationSplit} e
 which more intuitively links the merger of lineages with appropriate changes in
 migration rates at the time of the split.
 
-\section{Risk prediction in human populations}
+\section*{Risk prediction in human populations}
 
 In another publication using this model~\citep{martin2017human},
 a separate error was introduced: the model itself was defined as suggested
@@ -172,11 +172,8 @@ This simulation was performed to assess the
 transferability of polygenic risk scores across human populations. In other words, it sought to
 explore how human demographic history and population structure affect our ability
 to predict genetic risk in diverse populations given the well-documented unequal representation
-in medical genetic studies \cite{Popejoy}. The resulting publication has been influential in the discussion of
-health inequalities and genomics, with over 350 citations since 2017.
-
-
-
+in medical genetic studies~\citep{popejoy2016genomics}. The resulting publication has been
+influential in the discussion of health inequalities and genomics, with over 350 citations since 2017.
 The large excess in divergence under the incorrect model here exaggerated the role of demography
 and genetic drift in limiting the transferability of genetic risk scores across populations.
 
@@ -192,7 +189,7 @@ across populations (Fig.~\ref{fig:prs}C,D), as presented in~\citet{martin2017hum
 At least for the neutral polygenic architectures considered here, genetic drift alone
 does not appear to induce large directional biases in mean predicted risk across ethnicities.
 
-\section{Conclusions}
+\section*{Conclusions}
 
 The implementation of complex demographic models is error prone, and such errors
 can have a large impact on downstream analysis and interpretation. 
@@ -254,7 +251,7 @@ pre- and post-publication vigilance from users and developers to ensure the
 soundness of the large body of simulation-based analyses.
 
 
-\section{Methods}
+\section*{Methods}
 
 
 We computed the expected allele frequency spectrum using
