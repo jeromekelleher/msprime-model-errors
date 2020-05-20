@@ -80,7 +80,6 @@ Particularly for the large models we use today, these are not
 intuitive or comprehensible for humans.
 The Python API for \msprime\ is a great improvement, allowing the user to
 state models in a documented and reproducible manner.
-\jkcomment{maybe show the OOA model as in both ms and msprime notation?}
 %\sgcomment{Other software, such as SLiM, 
 %have developed advanced user interfaces and even dedicated programming languages 
 %to facilitate the specification of various modes of evolution.\cite{}
@@ -271,6 +270,40 @@ Data and python scripts to recreate Figures~1~and~2 can be found at
 \url{https://github.com/jeromekelleher/msprime-model-errors}.
 A full list of the GitHub repositories containing copies of the erroneous
 model are also given here.
+
+For reference, the~\citet{gutenkunst2009inferring} demographic model, as written in \ms, is
+\begin{lstlisting}[frame=single]
+-n 1 1.682020 -n 2 3.736830 -n 3 7.292050
+-eg 0 2 116.010723 -eg 0 3 160.246047
+-ma x 0.881098 0.561966 0.881098 x 2.797460 0.561966 2.797460 x
+-ej 0.028985 3 2 -en 0.028985 2 0.287184
+-ema 0.028985 3 x 7.293140 x 7.293140 x x x x x
+-ej 0.197963 2 1 -en 0.303501 1 1
+\end{lstlisting}
+The equivalent model using \msprime\ is more human readable and provided in full at
+\url{https://github.com/jeromekelleher/msprime-model-errors}. The demographic events
+are given as
+\begin{lstlisting}[frame=single]
+demographic_events = [
+    # CEU and CHB merge into B with rate changes at T_EU_AS
+    msprime.MassMigration(
+        time=T_EU_AS, source=2, destination=1, proportion=1.0),
+    msprime.MigrationRateChange(time=T_EU_AS, rate=0),
+    msprime.MigrationRateChange(
+        time=T_EU_AS, rate=m_AF_B, matrix_index=(0, 1)),
+    msprime.MigrationRateChange(
+        time=T_EU_AS, rate=m_AF_B, matrix_index=(1, 0)),
+    msprime.PopulationParametersChange(
+        time=T_EU_AS, initial_size=N_B, growth_rate=0, population_id=1),
+    # Population B merges into YRI at T_B
+    msprime.MassMigration(
+        time=T_B, source=1, destination=0, proportion=1.0),
+    msprime.MigrationRateChange(time=T_B, rate=0),
+    # Size changes to N_A at T_AF
+    msprime.PopulationParametersChange(
+        time=T_AF, initial_size=N_A, population_id=0)
+]
+\end{lstlisting}
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
