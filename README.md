@@ -1,6 +1,71 @@
 # msprime-model-errors
-A short manuscript describing some modelling errors made with msprime
 
+This repo collects together information about two errors in 
+[msprime](https://msprime.readthedocs.io/) simulations. The 
+[manuscript](https://github.com/jeromekelleher/msprime-model-errors/blob/master/paper.pdf)
+describes the problems and background in detail.
+
+In short, there are two distinct problems here:
+
+1. The three population Out-of-Africa model given as an example in the msprime 
+   documentation was not an accurate description of the 
+   [true model](https://doi.org/10.1371/journal.pgen.1000695). In the most 
+   ancient time period, migration was allowed to continue between ancestral
+   African and European populations. Fortunately, the difference is a subtle
+   one, and the differences between the models is subtle. However, this 
+   code has been extensively copied --- see below.
+   
+2. The [simulation pipeline](https://github.com/armartin/ancestry_pipeline) for the 
+   analysis for the influential [Martin et al paper](https://doi.org/10.1016/j.ajhg.2017.03.004) 
+   contained an error, leading to the simulations being of a substantially 
+   different model from what was expected.
+
+See the manuscript for more information and analyis.
+
+## How did this happen?
+
+The error was present in the msprime documentation was found as part of the 
+quality control process for [stdpopsim](https://stdpopsim.readthedocs.io/en/latest/),
+as described in the [preprint](https://www.biorxiv.org/content/10.1101/2019.12.20.885129v2).
+
+See these issues for more details:
+
+- https://github.com/popsim-consortium/stdpopsim/pull/496#issuecomment-620408186
+- https://github.com/popsim-consortium/stdpopsim/pull/496
+- https://github.com/popsim-consortium/stdpopsim/issues/516
+
+## What do I need to do?
+
+If you have copied incorrect code, you have two basic options to fix it:
+
+### Fix your model code
+
+The problem with the OOA model is that migration is allowed between two 
+ancestral populations until the indefinite past, when we should only
+have a single ancestral population. The solution is to add 
+`MigrationRateChange` events to ensure that this erroneous migration
+isn't happening.
+
+**TODO** provide a link to the corrected version in the msprime repo.
+
+### Use stdpopsim
+
+Defining demographic models is hard and error-prone. In an attempt to 
+reduce the duplicated effort involved in reimplementing published models
+multiple times, the [PopSim Consortium](https://github.com/popsim-consortium)
+developed [stdpopsim](https://stdpopsim.readthedocs.io/en/latest/), a 
+standard library of population genetic models. The correct version of the 
+three population Out-of-Africa model is 
+[defined](https://stdpopsim.readthedocs.io/en/latest/catalog.html#sec_catalog_homsap_models_outofafrica_3g09)
+and can be run as simply as
+
+```
+   $ stdpopsim HomSap -d OutOfAfrica_3G09 -c chr22 10 -o ooa.trees
+```
+
+There is also a [Python API](https://stdpopsim.readthedocs.io/en/latest/api.html)
+which can plug directly into your existing pipeline, a significantly 
+simplify your code.
 
 ## Copies of Out-of-Africa example
 
@@ -48,7 +113,7 @@ The list is probably not exhaustive.
 
 The analysis for the [Martin et al paper](https://doi.org/10.1016/j.ajhg.2017.03.004) is 
 define in [armartin/ancestry_pipeline](https://github.com/armartin/ancestry_pipeline/blob/2e83e68bb5f32858a95046b4048c49899948ab1d/simulate_prs.py).
-We found the follwing repos that have seem to have code derived from it:
+We found the follwing repos that have code derived from it:
 
 - [nikbaya/risk_gradients](https://github.com/nikbaya/risk_gradients/blob/cf1ad95bc8249be0275034c357193bbf46c8d73f/python/msprime_prs.py)
 - [jshleap/Cotagging_playground](https://github.com/jshleap/Cotagging_playground/blob/7700af78408a38a114149a17b1f134d7481c5682/Simulate_PRS.py)
