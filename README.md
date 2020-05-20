@@ -2,7 +2,7 @@
 A short manuscript describing some modelling errors made with msprime
 
 
-## GitHub repos affected
+## Copies of Out-of-Africa example
 
 These GitHub repos have a copy of the faulty Out-of-Africa model that was in the 
 msprime documentation. Each link is to a file containing either a direct copy of the 
@@ -23,7 +23,6 @@ The list is probably not exhaustive.
 - [astheeggeggs/msprime_sim](https://github.com/astheeggeggs/msprime_sim/blob/8ec1945290fcfd2889dbb2a677e21012162fbc89/src/msprime_sim_scenarios.py)
 - [awohns/relative-allele-age](https://github.com/awohns/relative-allele-age/blob/7c22e19917207d4e31aebad73ebdb86bacf553df/out_of_africa_fig_transfer/ooa_sim.py)
 - [awohns/tsdate_paper](https://github.com/awohns/tsdate_paper/blob/d6e0cee1393f3dc1cf1112a6a7e543a6c2e1a0cb/src/evaluation.py)
-- [bkrosenz/ml4ils](https://github.com/bkrosenz/ml4ils/blob/de4a703c68401ba4e22e472571d0c7925dcb99d7/code/pylib/examples.py)
 - [carjed/primeval](https://github.com/carjed/primeval/blob/9fa2442ad7a28cbf75af83aa73e24007c3d17abb/primeval.py)
 - [carjed/topmed_singleton_clusters](https://github.com/carjed/topmed_singleton_clusters/blob/65e5de669af5499703c50aebeeadd50dabc4b96e/scripts/.ipynb_checkpoints/simulate_ext_branches-checkpoint.ipynb)
 - [cran/POPdemog](https://github.com/cran/POPdemog/blob/c58939d20c253d2cf18ef30397b4351bbb7ed1bd/inst/doc/popdemog_tutorial.Rmd)
@@ -43,3 +42,14 @@ The list is probably not exhaustive.
 - [popgengent/pipeline](https://github.com/popgengent/pipeline/blob/735cdcc5cb240a4bb3f8911fc5b65bec4cc09003/simulate_prs.py)
 - [slowkoni/out-of-africa-model](https://github.com/slowkoni/out-of-africa-model/blob/587e10fac40ea29e35659409698c67eadb75e8a8/msprime-out-of-africa-3-pops.py)
 - [tszfungc/scripts](https://github.com/tszfungc/scripts/blob/af30ebc6a5862550a0ac715f4ac6bc38d8e0c16c/simulation/sim_demography.py)
+
+
+## Copies of Martin et al pipeline
+
+The analysis for the [Martin et al paper](https://doi.org/10.1016/j.ajhg.2017.03.004) is 
+define in [armartin/ancestry_pipeline](https://github.com/armartin/ancestry_pipeline/blob/2e83e68bb5f32858a95046b4048c49899948ab1d/simulate_prs.py).
+We found the follwing repos that have seem to have code derived from it:
+
+- [nikbaya/risk_gradients](https://github.com/nikbaya/risk_gradients/blob/cf1ad95bc8249be0275034c357193bbf46c8d73f/python/msprime_prs.py)
+- [jshleap/Cotagging_playground](https://github.com/jshleap/Cotagging_playground/blob/7700af78408a38a114149a17b1f134d7481c5682/Simulate_PRS.py)
+- [popgengent/pipeline](https://github.com/popgengent/pipeline/blob/735cdcc5cb240a4bb3f8911fc5b65bec4cc09003/simulate_prs.py)
