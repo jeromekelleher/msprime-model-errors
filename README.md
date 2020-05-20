@@ -12,8 +12,8 @@ In short, there are two distinct problems here:
    [true model](https://doi.org/10.1371/journal.pgen.1000695). In the most 
    ancient time period, migration was allowed to continue between ancestral
    African and European populations. Fortunately, the difference is a subtle
-   one, and the differences between the models is subtle. However, this 
-   code has been extensively copied --- see below.
+   one, and the differences in expected diversity measures between the models
+   is small. However, this code has been extensively copied --- see below.
    
 2. The [simulation pipeline](https://github.com/armartin/ancestry_pipeline) for the 
    analysis for the influential [Martin et al paper](https://doi.org/10.1016/j.ajhg.2017.03.004) 
@@ -24,7 +24,7 @@ See the manuscript for more information and analyis.
 
 ## How did this happen?
 
-The error was present in the msprime documentation was found as part of the 
+The error present in the msprime documentation was found as part of the 
 quality control process for [stdpopsim](https://stdpopsim.readthedocs.io/en/latest/),
 as described in the [preprint](https://www.biorxiv.org/content/10.1101/2019.12.20.885129v2).
 
@@ -54,7 +54,7 @@ and can be run as simply as
 ```
 
 There is also a [Python API](https://stdpopsim.readthedocs.io/en/latest/api.html)
-which can plug directly into your existing pipeline, a significantly 
+which can plug directly into your existing pipeline and significantly 
 simplify your code.
 
 ### Fix your model code
@@ -65,7 +65,7 @@ have a single ancestral population. The solution is to add
 `MigrationRateChange` events to ensure that this erroneous migration
 isn't happening.
 
-The correct model with a single randomly mating population:
+Here is the correct model with a single randomly mating ancestral population:
 ```
 import math
 import msprime
