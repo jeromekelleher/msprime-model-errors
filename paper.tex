@@ -25,15 +25,15 @@
 \begin{document}
 
 \title{Describing demographic models is hard}
-\author[ ]{A permutation of}
 \author[1]{Aaron P. Ragsdale}
 \author[1]{Dominic Nelson}
-\author[2]{Jerome Kelleher}
-\author[1]{Simon Gravel}
+\author[1,$\star$]{Simon Gravel}
+\author[2,$\star$]{Jerome Kelleher}
 \affil[1]{McGill University and Genome Qu\'{e}bec Innovation Centre,
 McGill University, Montr\'{e}al, Qu\'{e}bec, Canada}
 \affil[2]{Big Data Institute, Li Ka Shing Centre for Health Information and Discovery,
 University of Oxford, Oxford, United Kingdom}
+\affil[$\star$]{Joint senior authors, listed alphabetically}
 \maketitle
 
 
@@ -51,8 +51,9 @@ for software developers and users to reduce the risk of such errors.
 
 \section{Introduction}
 
-The \msprime\ coalescent simulator~\citep{kelleher2016efficient,kelleher2020coalescent}
-is now quite widely used. The large increases in efficiency over the classical
+The \msprime\ coalescent
+simulator~\citep{kelleher2016efficient,nelson2020accounting,kelleher2020coalescent}
+is now widely used. The large increases in efficiency over the classical
 \ms\ program~\citep{hudson2002generating} make it feasible to simulate large
 samples of whole chromosomes for the first time. Another distinct advantage
 of \msprime\ is the Python API that is its primary interface, greatly
@@ -82,15 +83,20 @@ as part of its tutorial documentation. In this model (Fig.~\ref{fig:ooa_stats}A)
 Eurasian (CEU and CHB) and African (YRI) populations split from each other in the deep past,
 followed by a more recent split of European and Asian populations, with variable rates of
 continuous migration between each of the populations. However, the implementation in the
-\msprime\ tutorial was incorrect. Namely, before the time of the split of African and Eurasian
+\msprime\ tutorial was incorrect. Before the time of the split of African and Eurasian
 populations, when there should have been just a single randomly mating population, migration was
 allowed to occur between the ancestral population and a second population with size equal to
 the Eurasian bottleneck size for all time into the past (Fig.~\ref{fig:ooa_stats}B).
 
-%migration between those two populations was allowed to continue for all time into the
-%past. Even though the population split was implemented correctly, the specified demographic model had 
-%an additional population prior to the earliest split exchanging migrants with the ancestral population 
-%(Fig.~\ref{fig:ooa_stats}B) but not contributing otherwise to present-day populations.  
+This model was subsequently copied
+several times and used in publications \jkcomment{do we want to estimate how
+many times it was copied? A quick search on github suggests around 30
+times]} \dncomment{I like this as a rough metric, like ``the number of copies
+is unknown, but we found x copies on github''}
+
+It was used in a number of publications
+~\citep{martin2017human,albers2020dating,kelleher2019inferring,tong2020population,hubisz2019mapping,
+overcast2019integrated,zhou2018popdemog,pfaffelhuber2020choose}
 
 Fortunately, the effects of this error are subtle. Population sizes and structure since the time of
 the split are unaffected, so that differences in expected $F_{ST}$ are negligible between
@@ -101,14 +107,8 @@ from the correct model (Fig.~\ref{fig:ooa_stats}E-F).
 
 %However, the presence of the ghost population increases
 %the effective population size \aprcomment{not true - the effect is a bit different than just change in Ne}
-%and thus affects the distribution of older $T_{MRCA}$ and the expected 
+%and thus affects the distribution of older $T_{MRCA}$ and the expected
 %heterozygosity in each of the three populations by up to $4\%$ (Fig.~\ref{fig:ooa_stats}C-G).
-
-This model was subsequently copied
-several times and used in publications \jkcomment{do we want to estimate how
-many times it was copied? A quick search on github suggests around 30
-times]} \dncomment{I like this as a rough metric, like ``the number of copies
-is unknown, but we found x copies on github''}
 
 Such errors can be prevented by improved API design choice.
 To model a population split currently in \msprime, a user must specify a
@@ -130,7 +130,7 @@ After these initial checks were made, however, the simulation
 was performed without passing the parameter of demographic events,
 so that the three populations remained separated with low levels of migration and
 never merged as expected (Fig~\ref{fig:prs}A),
-leading to a vast overestimate of the divergence across human populations. 
+leading to a vast overestimate of the divergence across human populations.
 Whereas the correct model predicts a mean $F_{ST}$ of
 $0.05 - 0.10$ across the three population, the simulated model generated $F_{ST}$
 ranging between $0.3 - 0.6$, depending on the populations considered.
@@ -170,7 +170,7 @@ ts = msprime.simulate(
   migration_matrix=migration_matrix,
   demographic_events=demographic_events)
 \end{lstlisting}
-with the error-inducing need to re-enter parameter information,  
+with the error-inducing need to re-enter parameter information,
 we would now write
 \begin{lstlisting}[frame=single]
 demography = msprime.Demography(
@@ -213,13 +213,13 @@ Recognition of these difficulties drove efforts to peer-review demographic model
 implementation in \stdpopsim~\citep{adrion2019community}, with quality-controlled
 models and simulation resources for a growing number of commonly studied species.
 
-The first bug discussed in this note was indeed identified through a peer-review effort of the 
+The first bug discussed in this note was indeed identified through a peer-review effort of the
 model implementation, and it is not easily identified by inspecting the resulting data.
 The second bug would have been comparably easy to identify by inspection
-of the data, but the missing parameter was easy to overlook. 
+of the data, but the missing parameter was easy to overlook.
 
 We therefore recommend the following steps to ensure more robust simulations.
-First, we recommend that demographic models used in publications 
+First, we recommend that demographic models used in publications
 are verified by a second pair of eyes in code review or an independent implementation.
 If the implementation is complex enough that code review is impractical, the risk
 that bugs are introduced is extremely high and additional caution and statistical
@@ -235,7 +235,7 @@ open source development processes. By making their entire pipeline available,
 but they made it possible for such errors to be found and corrected.
 There must be many, many more mistakes out there, and we need both
 pre- and post-publication vigilance from users and developers to ensure the
-soundness of the large body of simulation-based analyses. 
+soundness of the large body of simulation-based analyses.
 
 \section{Methods}
 
@@ -259,7 +259,7 @@ Data and python scripts to recreate Figures~1~and~2 can be found at
 
 \begin{itemize}
 \item Alicia Martin
-\item 
+\item
 \end{itemize}
 
 \bibliographystyle{plainnat}
