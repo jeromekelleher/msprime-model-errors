@@ -75,7 +75,6 @@ code, or code that is obviously derived from it.
 
 The list is probably not exhaustive.
 
-- [CshlSiepelLab/argweaver-d-analysis](https://github.com/CshlSiepelLab/argweaver-d-analysis/blob/5f28c69ee351e3b6f7819115fbc42a39ddf41f0b/simulations/generate/simRecent.py)
 - [DomNelson/wf_coalescent](https://github.com/DomNelson/wf_coalescent/blob/842a3f22c075b6499b13f214adfb752b80c4e4a4/scripts/simulate_ooa.py)
 - [Ephraim-usc/egrm](https://github.com/Ephraim-usc/egrm/blob/3baf5009aaf1519ebf175074e46494004849bbc7/egrm/simulation.py)
 - [OasisYE/MsprimeSimul](https://github.com/OasisYE/MsprimeSimul/blob/77181059bc2d7f6d5cd970a64a56192f26eccc95/Gutenkunst-out-of-Africa.py)
@@ -113,7 +112,7 @@ The list is probably not exhaustive.
 
 The analysis for the [Martin et al paper](https://doi.org/10.1016/j.ajhg.2017.03.004) is 
 define in [armartin/ancestry_pipeline](https://github.com/armartin/ancestry_pipeline/blob/2e83e68bb5f32858a95046b4048c49899948ab1d/simulate_prs.py).
-We found the follwing repos that have code derived from it:
+We found the following repos that have code derived from it:
 
 - [nikbaya/risk_gradients](https://github.com/nikbaya/risk_gradients/blob/cf1ad95bc8249be0275034c357193bbf46c8d73f/python/msprime_prs.py)
 - [jshleap/Cotagging_playground](https://github.com/jshleap/Cotagging_playground/blob/7700af78408a38a114149a17b1f134d7481c5682/Simulate_PRS.py)
@@ -128,7 +127,7 @@ a number of papers that may be affected by the erroneous model.
 - [Dating genomic variants and shared ancestry in population-scale sequencing
   data](https://doi.org/10.1371/journal.pbio.3000586). The OOA model was 
   used as an example of a complicated demography when evaluating the   
-  accuracty of allele age estimates. The precise details of the 
+  accuracy of allele age estimates. The precise details of the 
   model are not important and it is highly unlikely the incorrect 
   model specification has any impact.
 - [Inferring whole-genome histories in large population datasets](https://doi.org/10.1038/s41588-019-0483-y).
@@ -138,17 +137,27 @@ a number of papers that may be affected by the erroneous model.
   of the paper in any way.
 - [Population genetic simulation study of power in association testing across
   genetic architectures and study designs](https://doi.org/10.1002/gepi.22264)
-  **TODO** describe model usage.
-- [Mapping gene flow between ancient hominins through demography-aware
-  inference of the ancestral recombination graph](https://www.biorxiv.org/content/10.1101/687368v1)
-  **TODO** describe model usage
-- [An integrated model of population genetics and community
-  ecology](https://doi.org/10.1111/jbi.13541)
-  **TODO**
-
-**TODO** Finish
-  
-    
-
-    
-
+  The authors use an implementation of the [Tennessen
+model](https://stdpopsim.readthedocs.io/en/latest/catalog.html#sec_catalog_homsap_models_outofafrica_2t12)
+  that is based on the incorrect msprime OOA example. It would 
+  appear that this implemented model also does not switch off 
+  migration in the most ancient time period. However, the method 
+  is not concerned with detecting detailed population structure, and 
+  so the details of the model used are unlikely to be significant.
+- [An integrated model of population genetics and community ecology](https://doi.org/10.1111/jbi.13541)
+  The OOA model appears in the GitHub repository associated with this paper
+  ([isaacovercast/gimmeSAD](https://github.com/isaacovercast/gimmeSAD)), but it
+  appears to only have been used as a temporary debugging example.
+- [POPdemog: Visualizing Population Demographic History From Simulation
+  Scripts](https://doi.org/10.1093/bioinformatics/bty184) POPDemog is a method 
+  for visualising demographic histories as described by a number of population
+  genetic tools. The OOA example is included as an example of how they 
+  can convert msprime input into ms compatible demography descriptions,
+  which they then process.
+- [How to choose sets of ancestry informative markers: A supervised feature
+  selection approach](https://doi.org/10.1016/j.fsigen.2020.102259) In this
+  paper the OOA model was used to evaluate a new method for choosing ancestry
+  informative markers. Given the very subtle effect of the incorrect
+  model on demography (and the fact the method was evaluated using other  
+  simulations and real data), it seems unlikely that the model specified will have   
+  any effect on the conclusions of the paper.
