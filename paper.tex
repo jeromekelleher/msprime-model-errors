@@ -24,7 +24,7 @@
 
 \begin{document}
 
-\title{Lessons learned from buggy models of human history}
+\title{Lessons learned from bugs in models of human history}
 \author[1]{Aaron P. Ragsdale}
 \author[1]{Dominic Nelson}
 \author[1,$\star$]{Simon Gravel}
@@ -42,6 +42,8 @@ Lessons learned from misspecified models of human history \\
 Lessons learned from buggy models of human history \\
 Lessons learned from bugs in population genetics models
 }
+\sgcomment{How to avoid simulating the wrong demographic model}
+
 
 \abstract{
 Simulation plays a central role in population genomics studies. Recent years
@@ -92,7 +94,7 @@ In light of these implementation errors, we discuss improvements to \msprime's A
 discoveries and more general best practices for implementing and simulating complex multi-population
 demography.
 
-\section*{A bad tutorial example}
+\section*{Case 1: A misspecified model in msprime's documentation}
 
 To illustrate the demography API, \msprime\ included a description of a widely-used
 three population Out-of-Africa model~\citep{gutenkunst2009inferring}
@@ -149,7 +151,7 @@ The release of \msprime\ version~1.0 will introduce a \texttt{PopulationSplit} e
 which more intuitively links the merger of lineages with appropriate changes in
 migration rates at the time of the split.
 
-\section*{Risk prediction in human populations}
+\section*{Case 2: Incorrect model parameters in an analysis pipeline}
 
 In another publication using this model~\citep{martin2017human},
 a separate error was introduced: the model itself was defined as suggested
@@ -270,14 +272,6 @@ Data and python scripts to recreate Figures~1~and~2 can be found at
 \url{https://github.com/jeromekelleher/msprime-model-errors}.
 A full list of the GitHub repositories containing copies of the erroneous
 model are also given here.
-
-\section*{Acknowledgements}
-
-\begin{itemize}
-\item Alicia Martin
-\item stdpopsim as a whole or anyone in particular from that group?
-\item others?
-\end{itemize}
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
