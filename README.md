@@ -118,3 +118,37 @@ We found the follwing repos that have code derived from it:
 - [nikbaya/risk_gradients](https://github.com/nikbaya/risk_gradients/blob/cf1ad95bc8249be0275034c357193bbf46c8d73f/python/msprime_prs.py)
 - [jshleap/Cotagging_playground](https://github.com/jshleap/Cotagging_playground/blob/7700af78408a38a114149a17b1f134d7481c5682/Simulate_PRS.py)
 - [popgengent/pipeline](https://github.com/popgengent/pipeline/blob/735cdcc5cb240a4bb3f8911fc5b65bec4cc09003/simulate_prs.py)
+
+
+## Publications affected
+
+By searching for the GitHub repository URLs above, we were able to identify 
+a number of papers that may be affected by the erroneous model.
+
+- [Dating genomic variants and shared ancestry in population-scale sequencing
+  data](https://doi.org/10.1371/journal.pbio.3000586). The OOA model was 
+  used as an example of a complicated demography when evaluating the   
+  accuracty of allele age estimates. The precise details of the 
+  model are not important and it is highly unlikely the incorrect 
+  model specification has any impact.
+- [Inferring whole-genome histories in large population datasets](https://doi.org/10.1038/s41588-019-0483-y).
+  The OOA model was used here as an example of a more complex demographic
+  history, used to test ancestry inference methods. The specifics of the
+  demography is not important, and the model does not affect the conclusions
+  of the paper in any way.
+- [Population genetic simulation study of power in association testing across
+  genetic architectures and study designs](https://doi.org/10.1002/gepi.22264)
+  **TODO** describe model usage.
+- [Mapping gene flow between ancient hominins through demography-aware
+  inference of the ancestral recombination graph](https://www.biorxiv.org/content/10.1101/687368v1)
+  **TODO** describe model usage
+- [An integrated model of population genetics and community
+  ecology](https://doi.org/10.1111/jbi.13541)
+  **TODO**
+
+**TODO** Finish
+  
+    
+
+    
+
