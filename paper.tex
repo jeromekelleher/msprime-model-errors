@@ -94,7 +94,7 @@ the tutorial for \msprime\ version 0.3.0 and remained in the documentation for
 around four years.
 
 Fortunately, the effects of this error are subtle and it would take
-and exceedingly sensitive method to detect the difference.
+an exceedingly sensitive method to detect the difference.
 Population sizes and structure since the time of
 the split are unaffected, so that differences in expected $F_{ST}$ are negligible between
 the correct and incorrect model. However, the ancient structure distorts the distribution
@@ -181,9 +181,9 @@ does not appear to induce large directional biases in mean predicted risk across
 
 The implementation of complex demographic models is error prone, and such errors
 can have a large impact on downstream analysis and interpretation. 
-The discovery and correction of the simulation errors discussed here underscore
-how API design choices and 
-and we recommend the following steps to ensure more robust simulations.
+The discovery and correction of the demographic models discussed here underscore
+how API design choice can lead to the propagation of mistakes that are difficult
+to notice. We therefore recommend the following steps to ensure more robust simulations.
 
 First, the design of user interface and API for scientific software matters,
 and many bugs can be prevented by using more intuitive interfaces.
@@ -214,57 +214,26 @@ dbg.print_history()
 ts = msprime.simulate(demography=demography)
 \end{lstlisting}
 
-
-
-Recognition of these difficulties drove efforts to peer-review demographic model
-implementation in \stdpopsim~\citep{adrion2019community}, with quality-controlled
+Second, from a user's perspective, steps should be taken to validate the implemented
+demographic model. This could include verification through code review or an
+independent implementation of the model, which is the approach taken by
+\stdpopsim~\citep{adrion2019community} to compile quality-controlled
 models and simulation resources for a growing number of commonly studied species.
+Basic statistical validation should also be performed on any simulated model, and
+recent progress in computing summary statistics from tree sequence data can make
+this easier~\citep{ralph2020efficiently}. If simulations are so large that statistical
+validation is burdensome, subsets of the simulated data can be analyzed to ensure
+general diversity patterns are sound. Such tests likely would have caught the error
+in~\citet{martin2017human}.
 
-
-
-The first bug discussed in this note was indeed identified through a peer-review effort of the
-model implementation, and it is not easily identified by inspecting the resulting data.
-The second bug would have been comparably easy to identify by inspection
-of the data, but the missing parameter was easy to overlook.
-
-We therefore recommend the following steps to ensure more robust simulations.
-First, we recommend that demographic models used in publications
-are verified by a second pair of eyes in code review or an independent implementation.
-If the implementation is complex enough that code review is impractical, the risk
-that bugs are introduced is extremely high and additional caution and statistical
-verification is warranted.
-
-Second, we recommend basic statistical verification of all simulated data.
-If simulations are so large that statistical validation is burdensome,
-subsets of the simulated data can be analyzed~\citep{ralph2020efficiently}.
-Such tests would have caught the error in~\citet{martin2017human}.
-
-Third, openness is essential. We only know about these errors because of open code and
-open source development processes. By making their entire pipeline available,
+Finally, openness is essential to the self-correcting nature of science.
+We only know about these errors because of open code and
+open-source development processes. By making their entire pipeline available,
 \citet{martin2017human} not only enabled other research teams to build upon their findings,
 but they made it possible for such errors to be found and corrected.
 There must be many, many more mistakes out there, and we need both
 pre- and post-publication vigilance from users and developers to ensure the
 soundness of the large body of simulation-based analyses.
-
-----
-
-These errors suggests three lessons.
-
-Second, testing of the final simulated data is important. \aprcomment{verification of simulations, wrapped together}
-This can be challenging, because the amount of simulated data can be large.
-However, recent progress in computing summary statistics from tree
-sequence data can make this easier~\citep{ralph2020efficiently}.
-Even if the entire simulation data cannot be easily evaluated, subsets of the data
-can be examined to identify large errors.
-
-Third, open data analysis pipelines are necessary for the self-correcting nature of science.
-This subtle error of large effect was only discovered through our own re-use of
-the simulation pipeline developed in~\citet{martin2017human} to pursue
-additional analyses on a similar topic. We identified the bug by tracing down an unexpected
-result in our analysis. This error could not have been found and corrected without the open
-publication of the entire analysis pipeline from the original study.
-
 
 
 \section{Methods}
