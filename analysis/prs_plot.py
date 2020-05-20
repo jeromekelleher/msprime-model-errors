@@ -52,7 +52,7 @@ if __name__ == "__main__":
     pc, mm, de, dg = models.martin_model(merge_time=110000)
 
     # prs simulation data
-    fname = f'data/sim28_nhaps_400000_400000_400000_h2_0.67_m_1000_alpha_0.0.prs.gz'
+    fname = f'data/example_sim_nhaps_400000_400000_400000_h2_0.67_m_1000_alpha_0.0.prs.gz'
     data = pandas.read_csv(fname, sep='\t')
     AFR_true = data[data['Pop']=='AFR']['PRS_true']
     AFR_infer = data[data['Pop']=='AFR']['PRS_infer']

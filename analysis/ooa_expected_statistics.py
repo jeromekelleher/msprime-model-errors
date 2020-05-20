@@ -116,14 +116,14 @@ if __name__ == "__main__":
     demography.plotting.plot_demography(dg, leaf_order=['YRI', 'CEU', 'CHB'], ax=ax1,
                                         gen=25, stacked=[('A', 'YRI')], flipped=['CEU'],
                                         root_length=2, padding=3)
-    ax1.set_ylim(top=300)
+    ax1.set_ylim([0, 300])
     ax1.spines['left'].set_bounds(0, ax1.get_ylim()[1])
 
     ax2 = plt.subplot2grid((3, 6), (0, 3), colspan=3)
     demography.plotting.plot_demography(dg_mig, leaf_order=['YRI', 'CEU', 'CHB'], ax=ax2,
                                         gen=25, stacked=[('A', 'YRI')], flipped=['CEU'],
                                         padding=3)
-    ax2.set_ylim(top=300)
+    ax2.set_ylim([0, 300])
     ax2.spines['left'].set_bounds(0, ax2.get_ylim()[1])
     ax2.set_ylabel('')
 
