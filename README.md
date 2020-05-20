@@ -158,6 +158,5 @@ model](https://stdpopsim.readthedocs.io/en/latest/catalog.html#sec_catalog_homsa
   selection approach](https://doi.org/10.1016/j.fsigen.2020.102259) In this
   paper the OOA model was used to evaluate a new method for choosing ancestry
   informative markers. Given the very subtle effect of the incorrect
-  model on demography (and the fact the method was evaluated using other  
-  simulations and real data), it seems unlikely that the model specified will have   
-  any effect on the conclusions of the paper.
+  model on demography (and the fact the method was evaluated using other simulations and real data), 
+  it seems unlikely that the model specified will have any effect on the conclusions of the paper.
