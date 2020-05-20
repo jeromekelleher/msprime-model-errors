@@ -88,42 +88,49 @@ continuous migration between each of the populations. However, the implementatio
 \msprime\ tutorial was incorrect. Before the time of the split of African and Eurasian
 populations, when there should have been just a single randomly mating population, migration was
 allowed to occur between the ancestral population and a second population with size equal to
-the Eurasian bottleneck size for all time into the past (Fig.~\ref{fig:ooa_stats}B).
+the Eurasian bottleneck size for all time into the past
+(Fig.~\ref{fig:ooa_stats}B). This incorrect model was introduced into
+the tutorial for \msprime\ version 0.3.0 and remained in the documentation for
+around four years.
 
-This model was subsequently copied
-several times and used in publications. By searching for some keywords on
-GitHub, we found 33 repositories containing either direct copies of the
-erroneous model code, or code that was obviously derived from it.
-(We have opened issues on each of these repos to alert the authors.)
-
-
-\jkcomment{do we want to estimate how
-many times it was copied? A quick search on github suggests around 30
-times]} \dncomment{I like this as a rough metric, like ``the number of copies
-is unknown, but we found x copies on github''}
-
-It was used in a number of publications
-~\citep{martin2017human,albers2020dating,kelleher2019inferring,tong2020population,hubisz2019mapping,
-overcast2019integrated,zhou2018popdemog,pfaffelhuber2020choose}
-
-Fortunately, the effects of this error are subtle. Population sizes and structure since the time of
+Fortunately, the effects of this error are subtle and it would take
+and exceedingly sensitive method to detect the difference.
+Population sizes and structure since the time of
 the split are unaffected, so that differences in expected $F_{ST}$ are negligible between
 the correct and incorrect model. However, the ancient structure distorts the distribution
 of $T_{MRCA}$ beyond the split date and increases
 heterozygosity in contemporary populations roughly $4\%$ over expectations
 from the correct model (Fig.~\ref{fig:ooa_stats}E-F).
 
-%However, the presence of the ghost population increases
-%the effective population size \aprcomment{not true - the effect is a bit different than just change in Ne}
-%and thus affects the distribution of older $T_{MRCA}$ and the expected
-%heterozygosity in each of the three populations by up to $4\%$ (Fig.~\ref{fig:ooa_stats}C-G).
+It is fortunate that the error in the model description has quite a
+small effect because the tutorial code has been copied many times
+and used in publications. By searching for some identifying strings
+from the model definition on GitHub,
+we found 32 repositories containing either direct copies of the
+erroneous model code, or code that was obviously derived from it.
+(We have opened issues on each of these repos to alert the authors.)
+In most cases the publications use simulations to test some inference
+method which is not directly concerned with detailed demography,
+and the model is simply used as an example of a complex population
+history~\citep{kelleher2019inferring,albers2020dating,tong2020population}.
+\cite{zhou2018popdemog} use the incorrect model as an example
+of their method for visualising demographic models can support
+\msprime\ input.
+% TODO ask Franz about this
+Finally, \cite{pfaffelhuber2020choose}
+use simulations of the incorrect model demography to evalute
+their method for choosing ancestry informative markers.
+Given the very subtle effect of the incorrect
+model on demography (and the fact the method was evaluated using other
+simulations and real data), it seems unlikely that the model details
+will have any qualitative effect on their conclusions.
 
-Such errors can be prevented by improved API design choice.
+This long-standing error could have been prevented by better API design.
 To model a population split currently in \msprime, a user must specify a
 \texttt{MassMigration} event that moves lineages from one population to another
 and then must also remember to turn off migration
 between those populations at the same time.
-The release of \msprime~ver.~1.0 will introduce a \texttt{PopulationSplit} event,
+The release of \msprime\ version~1.0 will introduce a \texttt{PopulationSplit} event,
 which more intuitively links the merger of lineages with appropriate changes in
 migration rates at the time of the split.
 
@@ -277,6 +284,8 @@ recent versions of \msprime\ and \tskit\, and the updated pipeline is
 available at \url{https://github.com/apragsdale/PRS}.
 Data and python scripts to recreate Figures~1~and~2 can be found at
 \url{https://github.com/jeromekelleher/msprime-model-errors}.
+A full list of the GitHub repositories containing copies of the erroneous
+model are also given here.
 
 \section*{Acknowledgements}
 
