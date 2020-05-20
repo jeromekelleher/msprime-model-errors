@@ -38,16 +38,6 @@ See these issues for more details:
 
 If you have copied incorrect code, you have two basic options to fix it:
 
-### Fix your model code
-
-The problem with the OOA model is that migration is allowed between two 
-ancestral populations until the indefinite past, when we should only
-have a single ancestral population. The solution is to add 
-`MigrationRateChange` events to ensure that this erroneous migration
-isn't happening.
-
-**TODO** provide a link to the corrected version in the msprime repo.
-
 ### Use stdpopsim
 
 Defining demographic models is hard and error-prone. In an attempt to 
@@ -66,6 +56,16 @@ and can be run as simply as
 There is also a [Python API](https://stdpopsim.readthedocs.io/en/latest/api.html)
 which can plug directly into your existing pipeline, a significantly 
 simplify your code.
+
+### Fix your model code
+
+The problem with the OOA model is that migration is allowed between two 
+ancestral populations until the indefinite past, when we should only
+have a single ancestral population. The solution is to add 
+`MigrationRateChange` events to ensure that this erroneous migration
+isn't happening.
+
+**TODO** provide a link to the corrected version in the msprime repo.
 
 ## Copies of Out-of-Africa example
 
@@ -126,7 +126,7 @@ a number of papers that may be affected by the erroneous model.
 
 - [Dating genomic variants and shared ancestry in population-scale sequencing
   data](https://doi.org/10.1371/journal.pbio.3000586). The OOA model was 
-  used as an example of a complicated demography when evaluating the   
+  used as an example of a complicated demography when evaluating the 
   accuracy of allele age estimates. The precise details of the 
   model are not important and it is highly unlikely the incorrect 
   model specification has any impact.
