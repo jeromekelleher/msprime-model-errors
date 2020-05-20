@@ -36,6 +36,8 @@ University of Oxford, Oxford, United Kingdom}
 \affil[$\star$]{Joint senior authors, listed alphabetically}
 \maketitle
 
+\aprcomment{title suggestions:\\
+}
 
 \abstract{
 Simulation plays a central role in population genomics studies. Recent years
@@ -125,7 +127,7 @@ The release of \msprime~ver.~1.0 will introduce a \texttt{PopulationSplit} event
 which more intuitively links the merger of lineages with appropriate changes in
 migration rates at the time of the split.
 
-\section{A missing parameter}
+\section{A missing parameter (or) }
 
 In another publication using this model~\citep{martin2017human},
 a separate error was introduced: the model itself was defined as suggested
@@ -137,7 +139,7 @@ was performed without passing the parameter of demographic events,
 so that the three populations remained separated with low levels of migration and
 never merged as expected (Fig~\ref{fig:prs}A),
 leading to a vast overestimate of the divergence across human populations.
-Whereas the correct model predicts a mean $F_{ST}$ of
+While the correct model predicts a mean $F_{ST}$ of
 $0.05 - 0.10$ across the three population, the simulated model generated $F_{ST}$
 ranging between $0.3 - 0.6$, depending on the populations considered.
 Overall diversity was also strongly affected: expected heterozygosity was more than
@@ -146,19 +148,36 @@ levels in Eurasian populations when compared to expectations from the correct mo
 
 This simulation was performed to assess the
 transferability of polygenic risk scores across human populations, in particular to
-explore how human demographic history and population structure affects our ability
+explore how human demographic history and population structure affect our ability
 to predict genetic risk in populations of different ancestry than the originally studied
 population.
-The excess divergence exaggerated the role that demography plays
-in limiting the transferability of genetic risk scores across populations.
 The resulting publication has been influential in the discussion of
 health inequalities and genomics, with over 350 citations since 2017.
-We note that while difficulties in transferability remain in the corrected model
-(Fig.~\ref{fig:prs}), risk prediction in each population is significantly improved
-when using the correct demographic model
-(compare to Fig.~5 in~\citet{martin2017human}).
+But while the first implementation error had a small effect on resulting diversity statistics,
+this error more strongly impacts simulated diversity and interpretations based on that data.
+The excess divergence under the incorrect model here exaggerated the role that demography
+plays in limiting the transferability of genetic risk scores across populations.
 
-These errors suggests three lessons.
+Difficulties in transferability remain in the corrected model (Fig.~\ref{fig:prs}), although
+risk prediction in each population is significantly improved when using the correct
+demographic model (compare to Fig.~5 in~\citet{martin2017human}).
+The corrected simulations indicate that the accuracy of genetic risk scores is still
+substantially reduced in understudied populations (Fig.~\ref{fig:prs}E-G),
+supporting the main conclusion of~\citet{martin2017human}.
+However, the reduction is much less pronounced than reported.
+In particular, we do not observe large differences in mean risk prediction
+across populations (Fig.~\ref{fig:prs}C,D), as presented in~\citet{martin2017human}.
+At least for the neutral polygenic architectures considered here, genetic drift alone
+does not appear to induce large directional biases in mean predicted risk across ethnicities.
+
+\section{Conclusions}
+
+The implementation of complex demographic models is error prone, and such errors
+can have a large impact on downstream analysis and interpretation. 
+The discovery and correction of the simulation errors discussed here underscore
+how API design choices and 
+and we recommend the following steps to ensure more robust simulations.
+
 First, the design of user interface and API for scientific software matters,
 and many bugs can be prevented by using more intuitive interfaces.
 Whereas the original \msprime\ required the user to pass
@@ -188,7 +207,44 @@ dbg.print_history()
 ts = msprime.simulate(demography=demography)
 \end{lstlisting}
 
-Second, testing of the final simulated data is important.
+
+
+Recognition of these difficulties drove efforts to peer-review demographic model
+implementation in \stdpopsim~\citep{adrion2019community}, with quality-controlled
+models and simulation resources for a growing number of commonly studied species.
+
+
+
+The first bug discussed in this note was indeed identified through a peer-review effort of the
+model implementation, and it is not easily identified by inspecting the resulting data.
+The second bug would have been comparably easy to identify by inspection
+of the data, but the missing parameter was easy to overlook.
+
+We therefore recommend the following steps to ensure more robust simulations.
+First, we recommend that demographic models used in publications
+are verified by a second pair of eyes in code review or an independent implementation.
+If the implementation is complex enough that code review is impractical, the risk
+that bugs are introduced is extremely high and additional caution and statistical
+verification is warranted.
+
+Second, we recommend basic statistical verification of all simulated data.
+If simulations are so large that statistical validation is burdensome,
+subsets of the simulated data can be analyzed~\citep{ralph2020efficiently}.
+Such tests would have caught the error in~\citet{martin2017human}.
+
+Third, openness is essential. We only know about these errors because of open code and
+open source development processes. By making their entire pipeline available,
+\citet{martin2017human} not only enabled other research teams to build upon their findings,
+but they made it possible for such errors to be found and corrected.
+There must be many, many more mistakes out there, and we need both
+pre- and post-publication vigilance from users and developers to ensure the
+soundness of the large body of simulation-based analyses.
+
+----
+
+These errors suggests three lessons.
+
+Second, testing of the final simulated data is important. \aprcomment{verification of simulations, wrapped together}
 This can be challenging, because the amount of simulated data can be large.
 However, recent progress in computing summary statistics from tree
 sequence data can make this easier~\citep{ralph2020efficiently}.
@@ -202,46 +258,7 @@ additional analyses on a similar topic. We identified the bug by tracing down an
 result in our analysis. This error could not have been found and corrected without the open
 publication of the entire analysis pipeline from the original study.
 
-Finally, from a genetics perspective, the corrected simulations indicate that
-the accuracy of genetic risk scores is still substantially reduced in understudied
-populations (Fig.~\ref{fig:prs}E-G), supporting the main conclusion of~\citet{martin2017human}.
-However, the reduction is much less pronounced than reported.
-In particular, we do not observe large differences in mean risk prediction
-across populations (Fig.~\ref{fig:prs}C,D), as presented in~\citet{martin2017human}.
-At least for the neutral polygenic architectures considered here, genetic drift alone
-does not appear to induce large biases in mean predicted risk across ethnicities.
 
-\section{Conclusions}
-
-The implementation of complex demographic models is error prone, and such errors
-can have a large impact on downstream analysis and interpretation.
-Recognition of these difficulties drove efforts to peer-review demographic model
-implementation in \stdpopsim~\citep{adrion2019community}, with quality-controlled
-models and simulation resources for a growing number of commonly studied species.
-
-The first bug discussed in this note was indeed identified through a peer-review effort of the
-model implementation, and it is not easily identified by inspecting the resulting data.
-The second bug would have been comparably easy to identify by inspection
-of the data, but the missing parameter was easy to overlook.
-
-We therefore recommend the following steps to ensure more robust simulations.
-First, we recommend that demographic models used in publications
-are verified by a second pair of eyes in code review or an independent implementation.
-If the implementation is complex enough that code review is impractical, the risk
-that bugs are introduced is extremely high and additional caution and statistical
-verification is warranted.
-Second, we recommend basic statistical verification of all simulated data.
-If simulations are so large that statistical validation is burdensome,
-subsets of the simulated data can be analyzed~\citep{ralph2020efficiently}.
-Such tests would have caught the error in~\citet{martin2017human}.
-
-Third, openness is essential. We only know about these errors because of open code and
-open source development processes. By making their entire pipeline available,
-\citet{martin2017human} not only enabled other research teams to build upon their findings,
-but they made it possible for such errors to be found and corrected.
-There must be many, many more mistakes out there, and we need both
-pre- and post-publication vigilance from users and developers to ensure the
-soundness of the large body of simulation-based analyses.
 
 \section{Methods}
 
