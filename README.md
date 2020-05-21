@@ -66,7 +66,7 @@ have a single ancestral population. The solution is to add
 isn't happening.
 
 Here is the correct model with a single randomly mating ancestral population:
-```
+```python
 import math
 import msprime
 def out_of_africa():
