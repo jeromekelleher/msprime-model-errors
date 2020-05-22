@@ -106,11 +106,12 @@ around four years.
 Fortunately, the effects of this error are subtle.
 Population sizes and structure since the time of
 the earliest split are unaffected, so differences in expected $F_{ST}$ are negligible between
-the intended and incorrect models. However, the ancient structure distorts the distribution
-of early TMRCAs. The extraneous ancient population increases the long-term effective
+the correct and incorrect models. However, the ancient structure distorts the distribution
+of early TMRCAs (Fig.~\ref{fig:ooa_stats}E-G).
+The extraneous ancient population increases the long-term effective
 population size, resulting in roughly $4\%$ excess heterozygosity in
-contemporary populations compared to the intended model
-(Fig.~\ref{fig:ooa_stats}C-F).
+contemporary populations compared to the intended model, but the overall effects
+on patterns of diversity are minimal (Fig.~\ref{fig:ooa_stats}C,D).
 
 Even though the error has a limited effect on simulated data, the tutorial code has been
 copied many times and used in publications. By searching for some identifying strings
@@ -159,7 +160,7 @@ $0.05 - 0.10$ across the three population, the simulated model generated $F_{ST}
 ranging between $0.3 - 0.6$, depending on the populations considered.
 Overall diversity was also strongly affected: heterozygosity was more than
 doubled in African populations and reduced by more than half in Eurasian populations
-relative to the intended model.
+relative to the correct model.
 
 This simulation was performed to assess the
 transferability of polygenic risk scores across human populations. In other words, it sought to
@@ -170,16 +171,17 @@ influential in the discussion of health inequalities and genomics, with over 350
 The large excess in divergence under the incorrect model here exaggerated the role of demography
 and genetic drift in limiting the transferability of genetic risk scores across populations.
 
-Difficulties in transferability remain in the intended model (Fig.~\ref{fig:prs}), although
+Difficulties in transferability remain in the corrected model (Fig.~\ref{fig:prs}), although
 risk prediction in each population is significantly improved (compare to Fig.~5 in~\citet{martin2017human}).
-The intended simulations indicate that the accuracy of genetic risk scores is still
+Simulations under the correct model indicate that the accuracy of genetic risk scores is still
 substantially reduced in understudied populations (Fig.~\ref{fig:prs}E-G),
 supporting one of the main conclusions of~\citet{martin2017human}.
 However, the reduction is much less pronounced than reported.
 In particular, we do not observe large differences in mean predicted risk 
 across populations (Fig.~\ref{fig:prs}C,D), as presented in~\citet{martin2017human}.
-At least for the neutral polygenic architectures considered here, genetic drift alone
-does not appear to induce large directional biases in mean predicted risk.
+At least for the neutral polygenic architectures and continental-scale demographic model
+considered here, genetic drift alone does not appear to induce large directional biases
+in mean predicted risk.
 
 This error was easy to make, and could have been prevented by better API design.
 The original \msprime\ API requires the user to pass
@@ -192,7 +194,7 @@ dbg = msprime.DemographyDebugger(
 dbg.print_history()
 ts = msprime.simulate(
   population_configurations=population_configurations,
-  demographic_events=demographic_events, # Missing in Martin et al. 2017!
+  demographic_events=demographic_events, # Missing in Martin et al. 2017
   migration_matrix=migration_matrix)
 \end{lstlisting}
 Note that the same three parameters must be passed to both the debugger
@@ -338,11 +340,11 @@ common.
     into the past beyond the mass migration event with proportion $1$ from the ancestral population
     to the bottleneck population.
     \textbf{(C)} Marginal allele frequency spectra under the two models. Heterozygosity in the incorrect model
-    is inflated by $~3.5\%$, though the general shape of the distributions are qualitatively similar.
+    is inflated by $\sim3.5\%$, though the general shape of the distributions are qualitatively similar.
     \textbf{(D)} Similarly, the increased heterozygosity leads to excess $D^2$, though the LD-decay is
     qualitatively similar between models.
-    \textbf{(E-G)} True size history for each population plotted against the expected size history from
-    the expected inverse coalescence rates.
+    \textbf{(E-G)} True size history for each population plotted against the expected size history computed
+    from the inverse coalescence rates under each model.
 }
 \label{fig:ooa_stats}
 \end{center}
@@ -354,14 +356,16 @@ common.
 \caption{\textbf{The transferability of PRS under neutrality}.
     \textbf{(A)} In~\citet{martin2017human}, the simulated demographic model did not apply demographic
     events in the past, so continental populations were simulated as isolated with low levels of migration
-    for all time. The intended model is shown in Figure \ref{fig:ooa_stats}A.
+    for all time. The correct model has historical events as shown in Fig.~\ref{fig:ooa_stats}A.
     \textbf{(B-G)} We repeated the simulation experiment in~\cite{martin2017human} using the correct
     demographic model.
-    While risk prediction in the African and East Asian population is reduced compared to the studied
-    European population, the reduction in prediction accuracy is not as hopeless as originally reported.
-    Notably, under a neutral polygenic architecture, we do not expect significant bias in inferred PRS
-    in any of the populations (C, D).
-    Correlations were computed over 100 simulation replicates.
+    GWAS summary statistics were computed from 10,000 case and control subjects in the European
+    population, and the distribution of inferred PRS were compared across the three simulated populations.
+    Unlike the original study, we do not observe large differences in mean inferred PRS across
+    the three populations (C, D), and while risk prediction in the African and East Asian population is
+    still reduced compared to the European population, the reduction in prediction accuracy is not as
+    large as reported in the original study (E-G).
+    Correlations between true and inferred polygenic scores were computed over 100 simulation replicates.
     For direct comparison to the original study, see Figure~5 in~\citet{martin2017human}.
 }
 \label{fig:prs}
