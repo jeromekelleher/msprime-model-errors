@@ -38,13 +38,14 @@ def adjacent_values(vals, q1, q3):
     return lower_adjacent_value, upper_adjacent_value
 
 
-def set_axis_style(ax, labels):
+def set_axis_style(ax, labels, label_positions):
     ax.get_xaxis().set_tick_params(direction='out')
     ax.xaxis.set_ticks_position('bottom')
-    ax.set_xticks(np.arange(1, len(labels) + 1))
+    ax.set_xticks(label_positions)
     ax.set_xticklabels(labels)
-    ax.set_xlim(0.25, len(labels) + 0.75)
-    ax.set_xlabel('Sample name')
+    ax.set_xlim(label_positions[0]-.75, label_positions[-1]+.75)
+    #ax.set_xlabel('Sample name')
+    ax.set_xlabel('')
 
 
 if __name__ == "__main__":
@@ -143,35 +144,55 @@ if __name__ == "__main__":
     ax4.legend(fontsize=6, frameon=False)
     
     ## violin plots
+    
+    # data from Martin et al for h2 = 0.67:
+    data_martin = pandas.read_csv('data/h2_67_newtree.tsv', sep='\t')
+
+    corrs_orig = {}
+    for m in [200, 500, 1000]:
+        corrs_orig[m] = {}
+        for pop in ['AFR', 'EUR', 'EAS']:
+            corrs_orig[m][pop] = list(data_martin[(data_martin['m']==m) & (data_martin['Pop']==pop)]['estimate'])
+
+    
     h2 = 0.67
-    violin_colors = [cb_colors[0], cb_colors[3], cb_colors[1]]
+    violin_colors = [cb_colors[0], cb_colors[0],
+                     cb_colors[3], cb_colors[3],
+                     cb_colors[1], cb_colors[1]]
+
+    violin_positions = [1.2, 1.8, 3.2, 3.8, 5.2, 5.8]
 
     ax5 = plt.subplot2grid((4, 9), (2, 0), rowspan=2, colspan=3)
-    m = 200
-    data = [correlations[h2][m][k] for k in ['AFR','EAS','EUR']]
     
+    m = 200
+    data = [corrs_orig[m]['AFR'], correlations[h2][m]['AFR'],
+            corrs_orig[m]['EAS'], correlations[h2][m]['EAS'],
+            corrs_orig[m]['EUR'], correlations[h2][m]['EUR']]
+
     for y in [0.25, 0.5, 0.75]:
         ax5.axhline(y, ls='--', lw=0.5, color='black')
     
     parts = ax5.violinplot(data,showmeans=False, showmedians=False,
-                           showextrema=False)
+                           showextrema=False, positions=violin_positions)
     
     for ii, pc in enumerate(parts['bodies']):
         pc.set_facecolor(violin_colors[ii])
         pc.set_edgecolor('black')
         pc.set_linewidth(1)
-        pc.set_alpha(0.6)
+        if ii%2==0:
+            pc.set_alpha(0.5)
+        else:
+            pc.set_alpha(0.8)
 
-    quartile1, medians, quartile3 = np.percentile(data, [25, 50, 75], axis=1)
-    inds = np.arange(1, len(medians) + 1)
-    ax5.scatter(inds, medians, marker=".", color='white', s=15, zorder=3)
-    ax5.vlines(inds, quartile1, quartile3, color='black', linestyle='-', lw=5)
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [25, 50, 75]) for d in data]).T
+    ax5.scatter(violin_positions, medians, marker=".", color='white', s=8, zorder=3)
+    ax5.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=3)
     
-    quartile1, medians, quartile3 = np.percentile(data, [5, 50, 95], axis=1)
-    ax5.vlines(inds, quartile1, quartile3, color='black', linestyle='-', lw=1)
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [5, 50, 95]) for d in data]).T
+    ax5.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=1)
 
     labels = ['AFR','EAS','EUR']
-    set_axis_style(ax5, labels)
+    set_axis_style(ax5, labels, [1.5, 3.5, 5.5])
 
     ax5.set_ylim([0,1])
     ax5.set_title(r'${0}$ causal variants'.format(m))
@@ -182,30 +203,34 @@ if __name__ == "__main__":
     # m = 500
     ax6 = plt.subplot2grid((4, 9), (2, 3), rowspan=2, colspan=3)
     m = 500
-    data = [correlations[h2][m][k] for k in ['AFR','EAS','EUR']]
+    data = [corrs_orig[m]['AFR'], correlations[h2][m]['AFR'],
+            corrs_orig[m]['EAS'], correlations[h2][m]['EAS'],
+            corrs_orig[m]['EUR'], correlations[h2][m]['EUR']]
     
     for y in [0.25, 0.5, 0.75]:
         ax6.axhline(y, ls='--', lw=0.5, color='black')
     
     parts = ax6.violinplot(data,showmeans=False, showmedians=False,
-                           showextrema=False)
+                           showextrema=False, positions=violin_positions)
     
     for ii, pc in enumerate(parts['bodies']):
         pc.set_facecolor(violin_colors[ii])
         pc.set_edgecolor('black')
         pc.set_linewidth(1)
-        pc.set_alpha(0.6)
+        if ii%2==0:
+            pc.set_alpha(0.5)
+        else:
+            pc.set_alpha(0.8)
 
-    quartile1, medians, quartile3 = np.percentile(data, [25, 50, 75], axis=1)
-    inds = np.arange(1, len(medians) + 1)
-    ax6.scatter(inds, medians, marker=".", color='white', s=15, zorder=3)
-    ax6.vlines(inds, quartile1, quartile3, color='black', linestyle='-', lw=5)
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [25, 50, 75]) for d in data]).T
+    ax6.scatter(violin_positions, medians, marker=".", color='white', s=8, zorder=3)
+    ax6.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=3)
     
-    quartile1, medians, quartile3 = np.percentile(data, [5, 50, 95], axis=1)
-    ax6.vlines(inds, quartile1, quartile3, color='black', linestyle='-', lw=1)
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [5, 50, 95]) for d in data]).T
+    ax6.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=1)
 
     labels = ['AFR','EAS','EUR']
-    set_axis_style(ax6, labels)
+    set_axis_style(ax6, labels, [1.5, 3.5, 5.5])
 
     ax6.set_ylim([0,1])
     ax6.set_title(r'${0}$ causal variants'.format(m))
@@ -215,30 +240,34 @@ if __name__ == "__main__":
     # m = 1000
     ax7 = plt.subplot2grid((4, 9), (2, 6), rowspan=2, colspan=3)
     m = 1000
-    data = [correlations[h2][m][k] for k in ['AFR','EAS','EUR']]
+    data = [corrs_orig[m]['AFR'], correlations[h2][m]['AFR'],
+            corrs_orig[m]['EAS'], correlations[h2][m]['EAS'],
+            corrs_orig[m]['EUR'], correlations[h2][m]['EUR']]
     
     for y in [0.25, 0.5, 0.75]:
         ax7.axhline(y, ls='--', lw=0.5, color='black')
     
     parts = ax7.violinplot(data,showmeans=False, showmedians=False,
-                           showextrema=False)
+                           showextrema=False, positions=violin_positions)
     
     for ii, pc in enumerate(parts['bodies']):
         pc.set_facecolor(violin_colors[ii])
         pc.set_edgecolor('black')
         pc.set_linewidth(1)
-        pc.set_alpha(0.6)
+        if ii%2==0:
+            pc.set_alpha(0.5)
+        else:
+            pc.set_alpha(0.8)
 
-    quartile1, medians, quartile3 = np.percentile(data, [25, 50, 75], axis=1)
-    inds = np.arange(1, len(medians) + 1)
-    ax7.scatter(inds, medians, marker=".", color='white', s=15, zorder=3)
-    ax7.vlines(inds, quartile1, quartile3, color='black', linestyle='-', lw=5)
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [25, 50, 75]) for d in data]).T
+    ax7.scatter(violin_positions, medians, marker=".", color='white', s=8, zorder=3)
+    ax7.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=3)
     
-    quartile1, medians, quartile3 = np.percentile(data, [5, 50, 95], axis=1)
-    ax7.vlines(inds, quartile1, quartile3, color='black', linestyle='-', lw=1)
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [5, 50, 95]) for d in data]).T
+    ax7.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=1)
 
     labels = ['AFR','EAS','EUR']
-    set_axis_style(ax7, labels)
+    set_axis_style(ax7, labels, [1.5, 3.5, 5.5])
 
     ax7.set_ylim([0,1])
     ax7.set_title(r'${0}$ causal variants'.format(m))
