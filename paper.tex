@@ -1,15 +1,14 @@
 \documentclass{article}
-\usepackage{fullpage}
 \usepackage[round]{natbib}
-
-\usepackage{listings}
-\usepackage{url}
-
+\usepackage{fullpage}
 \usepackage{authblk}
 \usepackage{graphicx}
-\usepackage{color}
-
-\lstset{language=Python}
+\usepackage{minted}
+\usepackage{tcolorbox}
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{minted}{\begin{tcolorbox}}%
+\AfterEndEnvironment{minted}{\end{tcolorbox}}%
+\usepackage{url}
 
 % local definitions
 \newcommand{\msprime}[0]{\texttt{msprime}}
@@ -66,18 +65,27 @@ increasing the flexibility and ease of use over the standard approach of
 text-based command line interfaces.
 In particular, programs like \ms\ require users to specify cryptic command
 line options to describe demographic models.
-Particularly for the large models we use today, these are not
-intuitive or comprehensible for humans.
-The Python API for \msprime, by contrast, allows the user to
-state models in a more human-readable manner.
-An example contrasting the different approaches to model specification
-is provided in the Methods section.
-%\sgcomment{Other software, such as SLiM,
-%have developed advanced user interfaces and even dedicated programming languages
-%to facilitate the specification of various modes of evolution.\cite{}
-%}
+For example, the~\citet{gutenkunst2009inferring} demographic model
+(that is the subject of this note), as written
+in \ms\ syntax, is
+\begin{minted}[]{tcsh}
+-n 1 1.682020 -n 2 3.736830 -n 3 7.292050
+-eg 0 2 116.010723 -eg 0 3 160.246047
+-ma x 0.881098 0.561966 0.881098 x 2.797460 0.561966 2.797460 x
+-ej 0.028985 3 2 -en 0.028985 2 0.287184
+-ema 0.028985 3 x 7.293140 x 7.293140 x x x x x
+-ej 0.197963 2 1 -en 0.303501 1 1
+\end{minted}
+\noindent This model is relatively simple,
+and models with many more populations and parameters are increasingly
+common. Descriptions of such models in \ms\ syntax are not easy to comprehend.
+The Python interface for \msprime, by contrast, allows the user to
+state models in a more human-readable and programmatic manner,
+and has many advantages over \ms's command line interface.
 
-Implementing multi-population models of demographic history is difficult and error-prone.
+Even when using a high-level programming language like Python, however,
+implementing multi-population models
+of demographic history is difficult and error-prone.
 In this note we discuss two implementation errors that arose through
 unfortunate design decisions in \msprime's demography API and which then found their way
 into the scientific record. The first error has relatively mild effects on genetic diversity but was
@@ -125,7 +133,6 @@ history~\citep{kelleher2019inferring,albers2020dating,tong2020population}.
 \cite{zhou2018popdemog} used the incorrect model as an example
 of how their method for visualising demographic models can support
 \msprime\ input.
-% TODO ask Franz about this
 Finally, \cite{pfaffelhuber2020choose}
 used simulations of the incorrect model demography to evaluate
 their method for choosing ancestry informative markers.
@@ -139,6 +146,31 @@ To model a population split currently in \msprime, a user must specify a
 \texttt{MassMigration} event that moves lineages from one population to another
 and then must also remember to turn off migration
 between those populations at the same time.
+The demographic events for the correct model are given as
+
+
+\begin{minted}[linenos,highlightlines={15},numbersep=5pt]{python}
+demographic_events = [
+    # CEU and CHB merge into B with rate changes at T_EU_AS
+    msprime.MassMigration(
+        time=T_EU_AS, source=2, destination=1, proportion=1.0),
+    msprime.MigrationRateChange(time=T_EU_AS, rate=0),
+    msprime.MigrationRateChange(
+        time=T_EU_AS, rate=m_AF_B, matrix_index=(0, 1)),
+    msprime.MigrationRateChange(
+        time=T_EU_AS, rate=m_AF_B, matrix_index=(1, 0)),
+    msprime.PopulationParametersChange(
+        time=T_EU_AS, initial_size=N_B, growth_rate=0, population_id=1),
+    # Population B merges into YRI at T_B
+    msprime.MassMigration(
+        time=T_B, source=1, destination=0, proportion=1.0),
+    msprime.MigrationRateChange(time=T_B, rate=0), # NB This line was missing!!!
+    # Size changes to N_A at T_AF
+    msprime.PopulationParametersChange(
+        time=T_AF, initial_size=N_A, population_id=0)
+]
+\end{minted}
+Note that the migration rate change on 15 was missing in the incorrect model.
 The release of \msprime\ version~1.0 will introduce a \texttt{PopulationSplit} event,
 which more intuitively links the movement of lineages with appropriate changes in
 migration rates at the time of the split.
@@ -177,17 +209,17 @@ Simulations under the correct model indicate that the accuracy of genetic risk s
 substantially reduced in understudied populations (Fig.~\ref{fig:prs}E-G),
 supporting one of the main conclusions of~\citet{martin2017human}.
 However, the reduction is much less pronounced than reported.
-In particular, we do not observe large differences in mean predicted risk 
+In particular, we do not observe large differences in mean predicted risk
 across populations (Fig.~\ref{fig:prs}C,D), present in data and simulations from~\citet{martin2017human}.
 Thus, a model with continental-scale demographic structure, highly polygenic architecture, and
 neutral evolution does not appear to explain the large directional biases
 in mean predicted risk identified in~\citet{martin2017human}.
 
-From a software perspective, this error was easy to make,
+From a software perspective, this error was easy to make
 and could have been prevented by better API design.
 The original \msprime\ API requires the user to pass
 three separate parameters to specify a demographic model. For example,
-\begin{lstlisting}[frame=single]
+\begin{minted}[highlightlines={8}]{python}
 dbg = msprime.DemographyDebugger(
   population_configurations=population_configurations,
   demographic_events=demographic_events,
@@ -197,13 +229,13 @@ ts = msprime.simulate(
   population_configurations=population_configurations,
   demographic_events=demographic_events, # Missing in Martin et al. 2017
   migration_matrix=migration_matrix)
-\end{lstlisting}
+\end{minted}
 Note that the same three parameters must be passed to both the debugger
 and the simulate function.
 To help prevent such errors,
 \msprime~ver.~1.0 will introduce a Demography class. The above
 snippet would then be rewritten as
-\begin{lstlisting}[frame=single]
+\begin{minted}[]{python}
 demography = msprime.Demography(
   population_configurations=population_configurations,
   demographic_events=demographic_events,
@@ -211,7 +243,7 @@ demography = msprime.Demography(
 dbg = demography.debug()
 dbg.print_history()
 ts = msprime.simulate(demography=demography)
-\end{lstlisting}
+\end{minted}
 This simple change to the interface makes it much less likely
 that different models are passed to the debugger and simulator,
 reducing the potential for error.
@@ -289,43 +321,6 @@ Data and Python scripts to recreate Figures~1~and~2 can be found at
 \url{https://github.com/jeromekelleher/msprime-model-errors}.
 A full list of the GitHub repositories containing copies of the erroneous
 model are also given here.
-
-For reference, the~\citet{gutenkunst2009inferring} demographic model, as written in \ms, is
-\begin{lstlisting}[frame=single]
--n 1 1.682020 -n 2 3.736830 -n 3 7.292050
--eg 0 2 116.010723 -eg 0 3 160.246047
--ma x 0.881098 0.561966 0.881098 x 2.797460 0.561966 2.797460 x
--ej 0.028985 3 2 -en 0.028985 2 0.287184
--ema 0.028985 3 x 7.293140 x 7.293140 x x x x x
--ej 0.197963 2 1 -en 0.303501 1 1
-\end{lstlisting}
-The equivalent model using \msprime\ is more human readable and provided in full at
-\url{https://github.com/jeromekelleher/msprime-model-errors}. The demographic events
-are given as
-\begin{lstlisting}[frame=single]
-demographic_events = [
-    # CEU and CHB merge into B with rate changes at T_EU_AS
-    msprime.MassMigration(
-        time=T_EU_AS, source=2, destination=1, proportion=1.0),
-    msprime.MigrationRateChange(time=T_EU_AS, rate=0),
-    msprime.MigrationRateChange(
-        time=T_EU_AS, rate=m_AF_B, matrix_index=(0, 1)),
-    msprime.MigrationRateChange(
-        time=T_EU_AS, rate=m_AF_B, matrix_index=(1, 0)),
-    msprime.PopulationParametersChange(
-        time=T_EU_AS, initial_size=N_B, growth_rate=0, population_id=1),
-    # Population B merges into YRI at T_B
-    msprime.MassMigration(
-        time=T_B, source=1, destination=0, proportion=1.0),
-    msprime.MigrationRateChange(time=T_B, rate=0),
-    # Size changes to N_A at T_AF
-    msprime.PopulationParametersChange(
-        time=T_AF, initial_size=N_A, population_id=0)
-]
-\end{lstlisting}
-It is worth noting that the~\citet{gutenkunst2009inferring} model is relatively
-simple, and models with many more populations and parameters are increasingly
-common.
 
 \section*{Acknowledgements}
 \aprcomment{to fill in}
