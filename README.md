@@ -146,7 +146,6 @@ The list is probably not exhaustive.
 - [DomNelson/wf_coalescent](https://github.com/DomNelson/wf_coalescent/blob/842a3f22c075b6499b13f214adfb752b80c4e4a4/scripts/simulate_ooa.py)
 - [Ephraim-usc/egrm](https://github.com/Ephraim-usc/egrm/blob/3baf5009aaf1519ebf175074e46494004849bbc7/egrm/simulation.py)
 - [OasisYE/MsprimeSimul](https://github.com/OasisYE/MsprimeSimul/blob/77181059bc2d7f6d5cd970a64a56192f26eccc95/Gutenkunst-out-of-Africa.py)
-- [PrincetonUniversity/msprime_scripts](https://github.com/PrincetonUniversity/msprime_scripts/blob/892506fa28af98ed80d76a3db558adcbe8cf34e9/src/Demography_Models.py)
 - [TishkoffLab/data_simulation](https://github.com/TishkoffLab/data_simulation/blob/105e137881646b5e5ad054de0eecff072d2d8bbd/generate_simulated_phenogeno.py)
 - [YingZhou001/POPdemog](https://github.com/YingZhou001/POPdemog/blob/40c78a7a26c93c6755ebd8a74061b424d49042c3/doc/demo1.py)
 - [abwolf/msprime_scripts](https://github.com/abwolf/msprime_scripts/blob/f4a383831b3e4156eb9d732eccc4e3c192453709/src/Demography_Models.py)
@@ -175,6 +174,8 @@ The list is probably not exhaustive.
 - [slowkoni/out-of-africa-model](https://github.com/slowkoni/out-of-africa-model/blob/587e10fac40ea29e35659409698c67eadb75e8a8/msprime-out-of-africa-3-pops.py)
 - [tszfungc/scripts](https://github.com/tszfungc/scripts/blob/af30ebc6a5862550a0ac715f4ac6bc38d8e0c16c/simulation/sim_demography.py)
 
+### Previously affected by Out-of-Africa example
+- [PrincetonUniversity/msprime_scripts](https://github.com/PrincetonUniversity/msprime_scripts/blob/892506fa28af98ed80d76a3db558adcbe8cf34e9/src/Demography_Models.py)
 
 ## Copies of Martin et al pipeline
 
