@@ -174,7 +174,10 @@ The list is probably not exhaustive.
 - [slowkoni/out-of-africa-model](https://github.com/slowkoni/out-of-africa-model/blob/587e10fac40ea29e35659409698c67eadb75e8a8/msprime-out-of-africa-3-pops.py)
 - [tszfungc/scripts](https://github.com/tszfungc/scripts/blob/af30ebc6a5862550a0ac715f4ac6bc38d8e0c16c/simulation/sim_demography.py)
 
-### Previously affected by Out-of-Africa example
+### Copies of OOA code that have been fixed
+
+These repos previously had the faulty model and have now been fixed.
+
 - [PrincetonUniversity/msprime_scripts](https://github.com/PrincetonUniversity/msprime_scripts/blob/892506fa28af98ed80d76a3db558adcbe8cf34e9/src/Demography_Models.py)
 
 ## Copies of Martin et al pipeline
