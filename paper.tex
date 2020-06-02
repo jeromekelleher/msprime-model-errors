@@ -51,8 +51,14 @@ for software developers and users to reduce the risk of such errors.
 
 In the effort to build more realistic simulations of genetic diversity,
 scientific software developers often focus on computational speed and biological realism.
-Documentation and application programming interface (API), however, also determine
-whether software is used, and whether it is used correctly.
+As the models simulated become more realistic, however, they also become
+more complex and difficult to specify. The interface through which
+users define their models is therefore increasingly important. Without
+an intuitive and thoroughly documented interface, it is very difficult
+to simulate complex population models correctly.
+
+% Documentation and , however, also determine
+% whether software is used, and whether it is used correctly.
 
 The \msprime\ coalescent
 simulator~\citep{kelleher2016efficient,nelson2020accounting,kelleher2020coalescent}
@@ -60,8 +66,8 @@ is now widely used in genetics studies.
 Much of its appeal is the large increase in efficiency over the classical
 \ms\ program~\citep{hudson2002generating} which makes it feasible to simulate large
 samples of whole chromosomes for the first time. Another distinct advantage
-of \msprime\ is its Python API, greatly
-increasing the flexibility and ease of use over the standard approach of
+of \msprime\ is its Python application programming interface (API), which greatly
+increases the flexibility and ease of use over the standard approach of
 text-based command line interfaces.
 In particular, programs like \ms\ require users to specify cryptic command
 line options to describe demographic models.
@@ -323,12 +329,22 @@ A full list of the GitHub repositories containing copies of the erroneous
 model are also given here.
 
 \section*{Acknowledgements}
-\aprcomment{to fill in}
-\begin{itemize}
-\item Alicia - sharing data, comments?
-\item Ilan - comments
-\item Chris for comments?
-\end{itemize}
+We would like to thank Alicia Martin for comments on the manuscript
+and for providing the simulation data from~\cite{martin2017human}
+used in Fig.~\ref{fig:prs}. We also like to thank
+Chris Gignoux and Ilan Gronau for helpful comments on the manuscript.
+JK would like to apologise
+to those affected by the error in the example Out-of-Africa model and
+by the poor design decisions in \msprime's demography API.
+
+% JK: I left out the bit about thanking Alicia for the data - seems
+% unnecessary?
+% \aprcomment{to fill in}
+% \begin{itemize}
+% \item Alicia - sharing data, comments?
+% \item Ilan - comments
+% \item Chris for comments?
+% \end{itemize}
 
 \bibliographystyle{plainnat}
 \bibliography{paper}
