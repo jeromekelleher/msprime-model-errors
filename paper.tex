@@ -259,8 +259,11 @@ reducing the potential for error.
 The implementation of complex demographic models is error prone, and such errors
 can have a large impact on downstream analyses and interpretation.
 The discovery and correction of the demographic models discussed here underscore
-how API design choice can lead to the propagation of mistakes that are difficult
-to notice. We therefore recommend the following steps to ensure more robust simulations.
+how API design choice can lead to the propagation of mistakes that are difficult to notice.
+There are myriad other ways to get models slightly or very wrong. Migration
+rates can be set in the wrong direction, for example, and parameters can be
+rescaled incorrectly when a new mutation rate is used.
+We therefore recommend the following steps to ensure more robust simulations.
 
 Firstly, if possible, we recommend avoiding the implementation of
 demographic models entirely by using \stdpopsim~\citep{adrion2019community}.
@@ -332,7 +335,7 @@ model are also given here.
 We would like to thank Alicia Martin for comments on the manuscript
 and for providing the simulation data from~\cite{martin2017human}
 used in Fig.~\ref{fig:prs}. We also like to thank
-Chris Gignoux and Ilan Gronau for helpful comments on the manuscript.
+Chris Gignoux, Ilan Gronau and John Novembre for helpful comments on the manuscript.
 JK would like to apologise
 to those affected by the error in the example Out-of-Africa model and
 by the poor design decisions in \msprime's demography API.
