@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[round]{natbib}
+\usepackage[super,comma]{natbib}
 \usepackage{fullpage}
 \usepackage{authblk}
 \usepackage{graphicx}
@@ -29,9 +29,9 @@
 \author[1,$\star$]{Simon Gravel}
 \author[2,$\star$]{Jerome Kelleher}
 \affil[1]{McGill Genome Centre and Department of Human Genetics,
-McGill University, Montr\'{e}al, Qu\'{e}bec, Canada}
+McGill University, Montr\'{e}al, Qu\'{e}bec, H2X 3C9, Canada}
 \affil[2]{Big Data Institute, Li Ka Shing Centre for Health Information and Discovery,
-University of Oxford, Oxford, United Kingdom}
+University of Oxford, Oxford, \aprcomment{postal code} United Kingdom}
 \affil[$\star$]{Joint senior authors, listed alphabetically}
 \maketitle
 
@@ -189,10 +189,10 @@ in the documentation (using updated parameters
 from~\citet{gravel2011demographic}) and inspected
 using the \msprime\ debugging tools.
 Despite these initial checks being made, the simulation
-was performed without passing the parameter defining demographic events,
-so that the three populations
-never merged and remained separated with low levels of migration (Fig~\ref{fig:prs}A),
-leading to a vast overestimate of the divergence across human populations.
+was performed without passing the list of demographic events such as historical
+changes in size or population splits, so that the three populations
+never merged and remained separated with low levels of migration (Fig~\ref{fig:prs}A).
+This leads to a vast overestimate of the divergence across human populations.
 While the correct model predicts a mean $F_{ST}$ of
 $0.05 - 0.10$ across the three population, the simulated model generated $F_{ST}$
 ranging between $0.3 - 0.6$, depending on the populations considered.
@@ -265,8 +265,8 @@ rates can be set in the wrong direction, for example, and parameters can be
 rescaled incorrectly when a new mutation rate is used.
 We therefore recommend the following steps to ensure more robust simulations.
 
-Firstly, if possible, we recommend avoiding the implementation of
-demographic models entirely by using \stdpopsim~\citep{adrion2019community}.
+Firstly, if possible, we recommend using the \stdpopsim~\citep{adrion2019community}
+library, which removes the need to re-implement demographic models from scratch.
 This is a ``standard library" of quality-controlled
 models and simulation resources for a growing number of commonly studied species.
 The resource is built around an open-source community development model
@@ -294,8 +294,8 @@ due diligence. For example, a brief analysis of $F_{ST}$ values
 would likely would have prevented the error in~\citet{martin2017human}.
 It is understandable that such analyses were not undertaken in this
 case, as processing such a huge dataset (600,000 samples) was
-highly challenging. Recent progress has made statistical analysis this scale much
-easier~\citep{ralph2020efficiently}, but the problems would have been
+highly challenging. Recent progress has made statistical analysis scale much
+easier for large sample sizes~\citep{ralph2020efficiently}, but the problems would have been
 apparent if smaller pilot simulations were undertaken and analysed.
 Graphical inspection of demographic models can also help identify issues, especially if
 visualization can be automated. The demography debugging tool in \msprime\
@@ -349,7 +349,7 @@ by the poor design decisions in \msprime's demography API.
 % \item Chris for comments?
 % \end{itemize}
 
-\bibliographystyle{plainnat}
+\bibliographystyle{unsrtnat}
 \bibliography{paper}
 
 \pagebreak
@@ -380,7 +380,7 @@ by the poor design decisions in \msprime's demography API.
     \textbf{(A)} In~\citet{martin2017human}, the simulated demographic model did not apply demographic
     events in the past, so continental populations were simulated as isolated with low levels of migration
     for all time. The correct model has historical events as shown in Fig.~\ref{fig:ooa_stats}A.
-    \textbf{(B-G)} We repeated the simulation experiment in~\cite{martin2017human} using the correct
+    \textbf{(B-G)} We repeated the simulation experiment in~\citet{martin2017human} using the correct
     demographic model.
     GWAS summary statistics were computed from 10,000 case and control subjects in the European
     population, and the distribution of inferred PRS were compared across the three simulated populations.
