@@ -80,6 +80,10 @@ if __name__ == "__main__":
     correlations = pickle.load(open('data/correlations_alpha_0.0.bp', 'rb'))
     distributions = pickle.load(open('data/distributions_alpha_0.0.bp', 'rb'))
     
+    # population colors, to match Martin et al
+    yri_color = palettes.Category10[5][3]
+    ceu_color = palettes.Category10[5][0]
+    chb_color = palettes.Category10[5][4]
     
     fig = plt.figure(2, figsize=(6.5, 4))
     fig.clf()
@@ -93,51 +97,51 @@ if __name__ == "__main__":
     
     ## plot distributions over 100 replicates
     ax2 = plt.subplot2grid((4, 9), (0, 4), colspan=2)
-    sns.distplot(distributions['true'][.67][1000]['EUR']['mean'],
-                 color=cb_colors[1], hist = False, kde = True,
+    sns.distplot(distributions['true'][.67][1000]['AFR']['mean'],
+                 color=yri_color, hist = False, kde = True,
                  kde_kws = {'shade': True, 'linewidth': 1},
                  ax=ax2)
     sns.distplot(distributions['true'][.67][1000]['EAS']['mean'],
-                 color=cb_colors[3], hist = False, kde = True,
+                 color=chb_color, hist = False, kde = True,
                  kde_kws = {'shade': True, 'linewidth': 1},
                  ax=ax2)
-    sns.distplot(distributions['true'][.67][1000]['AFR']['mean'],
-                 color=cb_colors[0], hist = False, kde = True,
+    sns.distplot(distributions['true'][.67][1000]['EUR']['mean'],
+                 color=ceu_color, hist = False, kde = True,
                  kde_kws = {'shade': True, 'linewidth': 1},
                  ax=ax2)
-    
+
     ax2.set_ylabel('Density')
     ax2.set_xlabel('True PRS')
     ax2.set_yticks([0, 0.05])
     ax2.set_xticks([-15, 0, 15])
     
     ax3 = plt.subplot2grid((4, 9), (1, 4), colspan=2)
-    sns.distplot(distributions['infer'][.67][1000]['EUR']['mean'],
-                 color=cb_colors[1], hist = False, kde = True,
+    sns.distplot(distributions['infer'][.67][1000]['AFR']['mean'],
+                 color=yri_color, hist = False, kde = True,
                  kde_kws = {'shade': True, 'linewidth': 1},
                  ax=ax3)
     sns.distplot(distributions['infer'][.67][1000]['EAS']['mean'],
-                 color=cb_colors[3], hist = False, kde = True,
+                 color=chb_color, hist = False, kde = True,
                  kde_kws = {'shade': True, 'linewidth': 1},
                  ax=ax3)
-    sns.distplot(distributions['infer'][.67][1000]['AFR']['mean'],
-                 color=cb_colors[0], hist = False, kde = True,
+    sns.distplot(distributions['infer'][.67][1000]['EUR']['mean'],
+                 color=ceu_color, hist = False, kde = True,
                  kde_kws = {'shade': True, 'linewidth': 1},
                  ax=ax3)
-    
+
     ax3.set_ylabel('Density')
     ax3.set_xlabel('Inferred PRS')
     ax3.set_yticks([0, 0.02, 0.04])
     ax3.set_xticks([-100, 0, 100])
-    
+
     ## plot example of True vs Inferred individual PRS
     ax4 = plt.subplot2grid((4, 9), (0, 6), rowspan=2, colspan=3)
     ax4.plot(EUR_true[:10000], EUR_infer[:10000], 'o', markersize=.5,
-             c=cb_colors[1], label='EUR')
+             c=ceu_color, label='EUR')
     ax4.plot(EAS_true[:10000], EAS_infer[:10000], 'o', markersize=.5,
-             c=cb_colors[3], label='EAS')
+             c=chb_color, label='EAS')
     ax4.plot(AFR_true[:10000], AFR_infer[:10000], 'o', markersize=.5,
-             c=cb_colors[0], label='AFR')
+             c=yri_color, label='AFR')
     
     ax4.set_xlabel(r'\emph{Z} true')
     ax4.set_ylabel(r'\emph{Z} inferred')
@@ -156,9 +160,9 @@ if __name__ == "__main__":
 
     
     h2 = 0.67
-    violin_colors = [cb_colors[0], cb_colors[0],
-                     cb_colors[3], cb_colors[3],
-                     cb_colors[1], cb_colors[1]]
+    violin_colors = [yri_color, yri_color,
+                     chb_color, chb_color,
+                     ceu_color, ceu_color]
 
     violin_positions = [1.2, 1.8, 3.2, 3.8, 5.2, 5.8]
 
@@ -284,5 +288,5 @@ if __name__ == "__main__":
     fig.text(0.685, 0.45, 'G', fontsize=9, ha='center', va='center')
 
     fig.tight_layout()
-    plt.savefig('../figures/prs_fig.pdf')
+    plt.savefig('../figures/prs_fig.pdf', dpi=300)
     plt.show()

@@ -312,7 +312,7 @@ There must be many, many more mistakes out there, and we need both
 pre- and post-publication vigilance from users and developers to ensure the
 soundness of the large body of simulation-based analyses.
 
-\section*{Methods}
+\section*{Data and Code Availability}
 
 We computed the expected allele frequency spectrum using
 \texttt{moments}~ver.~1.0.3~\citep{jouganous2017inferring}, and LD-decay curves using
@@ -366,8 +366,12 @@ by the poor design decisions in \msprime's demography API.
     is inflated by $\sim3.5\%$, though the general shape of the distributions are qualitatively similar.
     \textbf{(D)} Similarly, the increased heterozygosity leads to excess $D^2$, though the LD-decay is
     qualitatively similar between models.
-    \textbf{(E-G)} True size history for each population plotted against the expected size history computed
-    from the inverse coalescence rates under each model.
+    \textbf{(E-G)} We compared the true size history for each population under this model to their
+    expected inverse coalescent rates, which are often interpreted as $N_e$. The correct and incorrect
+    models (A and B) are equivalent in the recent history, so the inverse coalescence rates only differ
+    in the more distant past. For multi-population demographic history, the inverse coalescence rates
+    are not expected to match the ``true'' historical size along each branch, as population structure and
+    migration between populations change coalescent probabilities over time.
 }
 \label{fig:ooa_stats}
 \end{center}

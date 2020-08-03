@@ -108,6 +108,11 @@ if __name__ == "__main__":
         true_sizes[int(T_B):, 0]
     ))
 
+    # population colors, to match Martin et al
+    yri_color = palettes.Category10[5][3]
+    ceu_color = palettes.Category10[5][0]
+    chb_color = palettes.Category10[5][4]
+
     fig = plt.figure(1, figsize=(6.5, 6))
     fig.clf()
 
@@ -129,72 +134,72 @@ if __name__ == "__main__":
 
     ax3 = plt.subplot2grid((3, 6), (1, 0), colspan=3)
     ax3.plot(fs.marginalize([1,2]),
-             '-', lw=1, color=cb_colors[0], label='YRI (model A)')
+             '-', lw=1, color=yri_color, label='YRI (model A)')
     ax3.plot(fs_mig.marginalize([1,2]),
-             '--', lw=1, color=cb_colors[0], label='YRI (model B)')
+             '--', lw=1, color=yri_color, label='YRI (model B)')
     
     ax3.plot(fs.marginalize([0,2]),
-             '-', lw=1, color=cb_colors[1], label='CEU (A)')
+             '-', lw=1, color=ceu_color, label='CEU (A)')
     ax3.plot(fs_mig.marginalize([0,2]),
-             '--', lw=1, color=cb_colors[1], label='CEU (B)')
+             '--', lw=1, color=ceu_color, label='CEU (B)')
 
     ax3.set_yscale('log')
     ax3.set_xlabel('Allele frequency')
     ax3.set_ylabel(r'Count (with $\theta=1$)')
-    ax3.legend(frameon=False)
+    ax3.legend(frameon=False, fontsize=6)
 
     ax4 = plt.subplot2grid((3, 6), (1, 3), colspan=3)
-    ax4.plot(1e2*rs, D2_yri, '-', color=cb_colors[0], lw=1, label='YRI (A)')
-    ax4.plot(1e2*rs, D2_mig_yri, '--', color=cb_colors[0], lw=1, label='YRI (B)')
-    ax4.plot(1e2*rs, D2_chb, '-', color=cb_colors[3], lw=1, label='CHB (A)')
-    ax4.plot(1e2*rs, D2_mig_chb, '--', color=cb_colors[3], lw=1, label='CHB (B)')
+    ax4.plot(1e2*rs, D2_yri, '-', color=yri_color, lw=1, label='YRI (A)')
+    ax4.plot(1e2*rs, D2_mig_yri, '--', color=yri_color, lw=1, label='YRI (B)')
+    ax4.plot(1e2*rs, D2_chb, '-', color=chb_color, lw=1, label='CHB (A)')
+    ax4.plot(1e2*rs, D2_mig_chb, '--', color=chb_color, lw=1, label='CHB (B)')
 
     ax4.set_yscale('log')
     ax4.set_ylabel('$E[D^2]$')
     ax4.set_xlabel('cM')
     ax4.set_xscale('log')
-    ax4.legend(frameon=False)
+    ax4.legend(frameon=False, fontsize=6)
 
     ax5 = plt.subplot2grid((3, 6), (2, 0), colspan=2)
     
-    ax5.plot(steps*generation_time, yri_size, '-', color='gray', label='YRI size')
+    ax5.plot(steps*generation_time, yri_size, ':', color='gray', label='YRI size')
     ax5.plot(steps*generation_time, 1 / 2 / coal_rates[('YRI', 'YRI')],
-             '-', lw=1, color=cb_colors[0], label='Model A')
+             '-', lw=1, color=yri_color, label='Model A')
     ax5.plot(steps*generation_time, 1 / 2 / coal_rates_mig[('YRI', 'YRI')],
-             '--', lw=1, color=cb_colors[0], label='Model B')
+             '--', lw=1, color=yri_color, label='Model B')
     
     ax5.set_xscale('log')
-    ax5.set_ylabel('Eff. pop. size')
-    ax5.set_xlim([1000, 1e6])
-    ax5.legend(frameon=False)
+    ax5.set_ylabel('Inverse coalalescence rate')
+    ax5.set_xlim([5000, 1e6])
+    ax5.legend(frameon=False, fontsize=6)
 
     ax6 = plt.subplot2grid((3, 6), (2, 2), colspan=2)
     
-    ax6.plot(steps*generation_time, ceu_size, '-', color='gray', label='CEU size')
+    ax6.plot(steps*generation_time, ceu_size, ':', color='gray', label='CEU size')
     ax6.plot(steps*generation_time, 1 / 2 / coal_rates[('CEU', 'CEU')],
-             '-', lw=1, color=cb_colors[1], label='Model A')
+             '-', lw=1, color=ceu_color, label='Model A')
     ax6.plot(steps*generation_time, 1 / 2 / coal_rates_mig[('CEU', 'CEU')],
-             '--', lw=1, color=cb_colors[1], label='Model B')
+             '--', lw=1, color=ceu_color, label='Model B')
     
     ax6.set_xscale('log')
-    ax6.set_xlim([1000, 1e6])
-    ax6.legend(frameon=False)
+    ax6.set_xlim([5000, 1e6])
+    ax6.legend(frameon=False, fontsize=6)
 
     ax7 = plt.subplot2grid((3, 6), (2, 4), colspan=2)
     
-    ax7.plot(steps*generation_time, chb_size, '-', color='gray', label='CHB size')
+    ax7.plot(steps*generation_time, chb_size, ':', color='gray', label='CHB size')
     ax7.plot(steps*generation_time, 1 / 2 / coal_rates[('CHB', 'CHB')],
-             '-', lw=1, color=cb_colors[3], label='Model A')
+             '-', lw=1, color=chb_color, label='Model A')
     ax7.plot(steps*generation_time, 1 / 2 / coal_rates_mig[('CHB', 'CHB')],
-             '--', lw=1, color=cb_colors[3], label='Model B')
+             '--', lw=1, color=chb_color, label='Model B')
     
     ax7.set_xscale('log')
-    ax7.set_xlim([1000, 1e6])
-    ax7.legend(frameon=False)
+    ax7.set_xlim([5000, 1e6])
+    ax7.legend(frameon=False, fontsize=6)
 
-    ax5.set_ylim([0, 30e3])
-    ax6.set_ylim([0, 30e3])
-    ax7.set_ylim([0, 30e3])
+    ax5.set_ylim([0, 20e3])
+    ax6.set_ylim([0, 20e3])
+    ax7.set_ylim([0, 20e3])
     ax5.set_xlabel('Time in past (years)')
     ax6.set_xlabel('Time in past (years)')
     ax7.set_xlabel('Time in past (years)')
@@ -209,4 +214,4 @@ if __name__ == "__main__":
 
     #fig.tight_layout()
     fig.subplots_adjust(wspace=1.5, hspace=0.4, right=0.975, left=0.1, top=0.975, bottom=.08)
-    plt.savefig('../figures/ooa_expected_stats.pdf')
+    plt.savefig('../figures/ooa_expected_stats.pdf', dpi=300)
