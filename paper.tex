@@ -9,6 +9,7 @@
 \BeforeBeginEnvironment{minted}{\begin{tcolorbox}}%
 \AfterEndEnvironment{minted}{\end{tcolorbox}}%
 \usepackage{url}
+\usepackage{fancyvrb}
 
 % local definitions
 \newcommand{\msprime}[0]{\texttt{msprime}}
@@ -74,14 +75,18 @@ line options to describe demographic models.
 For example, the~\citet{gutenkunst2009inferring} demographic model
 (that is the subject of this note), as written
 in \ms\ syntax, is
-\begin{minted}[]{tcsh}
+%\begin{minted}[]{tcsh}
+\begin{indent}
+\begin{Verbatim}[xleftmargin=.5in]
 -n 1 1.682020 -n 2 3.736830 -n 3 7.292050
 -eg 0 2 116.010723 -eg 0 3 160.246047
 -ma x 0.881098 0.561966 0.881098 x 2.797460 0.561966 2.797460 x
 -ej 0.028985 3 2 -en 0.028985 2 0.287184
 -ema 0.028985 3 x 7.293140 x 7.293140 x x x x x
 -ej 0.197963 2 1 -en 0.303501 1 1
-\end{minted}
+\end{Verbatim}
+\end{indent}
+%\end{minted}
 \noindent This model is relatively simple,
 and models with many more populations and parameters are increasingly
 common. Descriptions of such models in \ms\ syntax are not easy to comprehend.
@@ -157,7 +162,8 @@ between those populations at the same time.
 The demographic events for the correct model are given as
 
 
-\begin{minted}[linenos,highlightlines={15},numbersep=5pt]{python}
+%\begin{minted}[linenos,highlightlines={15},numbersep=5pt]{python}
+\begin{Verbatim}[xleftmargin=.5in]
 demographic_events = [
     # CEU and CHB merge into B with rate changes at T_EU_AS
     msprime.MassMigration(
@@ -177,7 +183,8 @@ demographic_events = [
     msprime.PopulationParametersChange(
         time=T_AF, initial_size=N_A, population_id=0)
 ]
-\end{minted}
+\end{Verbatim}
+%\end{minted}
 Note that the migration rate change on 15 was missing in the incorrect model.
 The release of \msprime\ version~1.0 will introduce a \texttt{PopulationSplit} event,
 which more intuitively links the movement of lineages with appropriate changes in
@@ -227,7 +234,8 @@ From a software perspective, this error was easy to make
 and could have been prevented by better API design.
 The original \msprime\ API requires the user to pass
 three separate parameters to specify a demographic model. For example,
-\begin{minted}[highlightlines={8}]{python}
+%\begin{minted}[highlightlines={8}]{python}
+\begin{Verbatim}[xleftmargin=.5in]
 dbg = msprime.DemographyDebugger(
   population_configurations=population_configurations,
   demographic_events=demographic_events,
@@ -237,13 +245,15 @@ ts = msprime.simulate(
   population_configurations=population_configurations,
   demographic_events=demographic_events, # Missing in Martin et al. 2017
   migration_matrix=migration_matrix)
-\end{minted}
+\end{Verbatim}
+%\end{minted}
 Note that the same three parameters must be passed to both the debugger
 and the simulate function.
 To help prevent such errors,
 \msprime~ver.~1.0 will introduce a Demography class. The above
 snippet would then be rewritten as
-\begin{minted}[]{python}
+%\begin{minted}[]{python}
+\begin{Verbatim}[xleftmargin=.5in]
 demography = msprime.Demography(
   population_configurations=population_configurations,
   demographic_events=demographic_events,
@@ -251,7 +261,8 @@ demography = msprime.Demography(
 dbg = demography.debug()
 dbg.print_history()
 ts = msprime.simulate(demography=demography)
-\end{minted}
+\end{Verbatim}
+%\end{minted}
 This simple change to the interface makes it much less likely
 that different models are passed to the debugger and simulator,
 reducing the potential for error.
@@ -349,8 +360,8 @@ model are also given here.
 
 \section*{Acknowledgements}
 We would like to thank Alicia Martin for comments on the manuscript
-and for providing the simulation data from~\cite{martin2017human}
-used in Fig.~\ref{fig:prs}. We also like to thank
+and for providing the simulation data from their study reproduced
+in Fig.~\ref{fig:prs}. We also like to thank
 Chris Gignoux, Ilan Gronau and John Novembre for helpful comments on the manuscript.
 JK would like to apologise
 to those affected by the error in the example Out-of-Africa model and
