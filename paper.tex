@@ -32,7 +32,7 @@
 \affil[1]{McGill Genome Centre and Department of Human Genetics,
 McGill University, Montr\'{e}al, Qu\'{e}bec, H2X 3C9, Canada}
 \affil[2]{Big Data Institute, Li Ka Shing Centre for Health Information and Discovery,
-University of Oxford, Oxford, \aprcomment{postal code} United Kingdom}
+University of Oxford, Oxford, OX3 7LF, United Kingdom}
 \affil[$\star$]{Joint senior authors, listed alphabetically}
 \maketitle
 
@@ -140,14 +140,14 @@ erroneous model code, or code that was obviously derived from it.
 (We have opened issues on each of these repositories to alert the authors.)
 In most cases the publications used simulations to test a non-demographic inference
 method, such as inferring gene genealogies from sequencing data~\citep{kelleher2019inferring},
-determining the age of a genetic variant~\citep{albers2020dating}, 
+determining the age of a genetic variant~\citep{albers2020dating},
 or studying the power of variant association tests~\citep{tong2020population},
 and the model was used as an example of a complex population history.
-\cite{zhou2018popdemog} used the incorrect model as an example
+\citet{zhou2018popdemog}~used the incorrect model as an example
 of how their method for visualising demographic models can support
 \msprime\ input.
-Finally, \cite{pfaffelhuber2020choose}
-used simulations of the incorrect model demography to evaluate
+Finally, \citet{pfaffelhuber2020choose}~used simulations
+of the incorrect model demography to evaluate
 their method for choosing ancestry informative markers.
 Given the very subtle effect of the incorrect
 model on demography (and the fact the method was evaluated using other
@@ -185,7 +185,7 @@ demographic_events = [
 ]
 \end{Verbatim}
 %\end{minted}
-Note that the migration rate change on 15 was missing in the incorrect model.
+Note that the migration rate change on line 15 was missing in the incorrect model.
 The release of \msprime\ version~1.0 will introduce a \texttt{PopulationSplit} event,
 which more intuitively links the movement of lineages with appropriate changes in
 migration rates at the time of the split.
@@ -251,16 +251,18 @@ Note that the same three parameters must be passed to both the debugger
 and the simulate function.
 To help prevent such errors,
 \msprime~ver.~1.0 will introduce a Demography class. The above
-snippet would then be rewritten as
+snippet would then be rewritten (approximately) as
 %\begin{minted}[]{python}
 \begin{Verbatim}[xleftmargin=.5in]
 demography = msprime.Demography(
-  population_configurations=population_configurations,
-  demographic_events=demographic_events,
+  populations=populations,
+  events=demographic_events,
   migration_matrix=migration_matrix)
 dbg = demography.debug()
 dbg.print_history()
-ts = msprime.simulate(demography=demography)
+ts = msprime.simulate(
+  # other parameters defining samples etc
+  demography=demography)
 \end{Verbatim}
 %\end{minted}
 This simple change to the interface makes it much less likely
@@ -290,7 +292,7 @@ model is provided by another developer. If the original and ``QC" versions
 of the model are precisely equal, then we can have a reasonable degree
 of confidence in correctness. It is through this QC process that we discovered
 the misspecified model in \msprime's documentation.
-However, \stdpopsim has QC-verified models available for only a handful of published
+However, \stdpopsim\ has QC-verified models available for only a handful of published
 models and species, so it might not meet the needs of a particular simulation study.
 If the required model is not present in \stdpopsim, then extra care should
 be taken to validate the implementation.
@@ -309,8 +311,8 @@ due diligence. For example, a brief analysis of $F_{ST}$ values
 would likely would have prevented the error in~\citet{martin2017human}.
 It is understandable that such analyses were not undertaken in this
 case, as processing such a huge dataset (600,000 samples) was
-highly challenging. Recent progress has made statistical analysis scale much
-easier for large sample sizes~\citep{ralph2020efficiently}, so that $F_{ST}$,
+highly challenging. Recent progress has made statistical analysis at this scale much
+easier~\citep{ralph2020efficiently}, so that $F_{ST}$,
 heterozygosity, the allele frequency spectrum, or the distribution of coalescence
 times can be rapidly computed. However, the problems would have been
 apparent if pilot simulations with smaller sample sizes were undertaken and analysed,
@@ -342,7 +344,7 @@ Demographic models were plotted using the \texttt{demography} package written fo
 allows users to define a demographic model as a directed acyclic graph using
 \texttt{networkx}~\citep{hagberg2008exploring} which can be plotted as in Figures 1A,B and 2A.
 \texttt{demography} also can also translate the graph-based demography into \texttt{msprime} input
-commands or simulate the allele frequency spectrum or two-locus statistics using 
+commands or simulate the allele frequency spectrum or two-locus statistics using
 \texttt{moments}~\citep{jouganous2017inferring, ragsdale2019models}
 or \texttt{dadi}~\citep{gutenkunst2009inferring}.
 
