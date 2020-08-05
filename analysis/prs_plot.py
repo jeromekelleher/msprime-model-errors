@@ -81,9 +81,9 @@ if __name__ == "__main__":
     distributions = pickle.load(open('data/distributions_alpha_0.0.bp', 'rb'))
     
     # population colors, to match Martin et al
-    yri_color = palettes.Category10[5][3]
-    ceu_color = palettes.Category10[5][0]
-    chb_color = palettes.Category10[5][4]
+    yri_color = palettes.Paired[10][5]
+    ceu_color = palettes.Paired[10][1]
+    chb_color = palettes.Paired[10][9]
     
     fig = plt.figure(2, figsize=(6.5, 4))
     fig.clf()

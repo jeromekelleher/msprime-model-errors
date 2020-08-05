@@ -134,8 +134,10 @@ we found 32 repositories containing either direct copies of the
 erroneous model code, or code that was obviously derived from it.
 (We have opened issues on each of these repositories to alert the authors.)
 In most cases the publications used simulations to test a non-demographic inference
-method, and the model was used as an example of a complex population
-history~\citep{kelleher2019inferring,albers2020dating,tong2020population}.
+method, such as inferring gene genealogies from sequencing data~\citep{kelleher2019inferring},
+determining the age of a genetic variant~\citep{albers2020dating}, 
+or studying the power of variant association tests~\citep{tong2020population},
+and the model was used as an example of a complex population history.
 \cite{zhou2018popdemog} used the incorrect model as an example
 of how their method for visualising demographic models can support
 \msprime\ input.
@@ -277,7 +279,9 @@ model is provided by another developer. If the original and ``QC" versions
 of the model are precisely equal, then we can have a reasonable degree
 of confidence in correctness. It is through this QC process that we discovered
 the misspecified model in \msprime's documentation.
-If the required model is not present in \stdpopsim, then particular care should
+However, \stdpopsim has QC-verified models available for only a handful of published
+models and species, so it might not meet the needs of a particular simulation study.
+If the required model is not present in \stdpopsim, then extra care should
 be taken to validate the implementation.
 This could include verification through code review or comparison with an
 independent implementation of the model. If the model is of wider interest to
@@ -295,8 +299,11 @@ would likely would have prevented the error in~\citet{martin2017human}.
 It is understandable that such analyses were not undertaken in this
 case, as processing such a huge dataset (600,000 samples) was
 highly challenging. Recent progress has made statistical analysis scale much
-easier for large sample sizes~\citep{ralph2020efficiently}, but the problems would have been
-apparent if smaller pilot simulations were undertaken and analysed.
+easier for large sample sizes~\citep{ralph2020efficiently}, so that $F_{ST}$,
+heterozygosity, the allele frequency spectrum, or the distribution of coalescence
+times can be rapidly computed. However, the problems would have been
+apparent if pilot simulations with smaller sample sizes were undertaken and analysed,
+as simulations and analysis of small samples sizes is very efficient.
 Graphical inspection of demographic models can also help identify issues, especially if
 visualization can be automated. The demography debugging tool in \msprime\
 summarizes demographic events occurring over time, and various efforts are underway to facilitate
@@ -319,9 +326,18 @@ We computed the expected allele frequency spectrum using
 \texttt{moments.LD}~\citep{ragsdale2019models}. $F_{ST}$ and other diversity statistics
 were computed from the expected AFS and verified using branch statistics from
 the output of \msprime\ simulations using \tskit~ver.~0.2.3~\citep{ralph2020efficiently}.
-Demographic models were plotted using the \texttt{demography} package
-(\url{https://github.com/apragsdale/demography}, ver.~0.0.3).
-We used the original pipeline from~\citet{martin2017human} available from
+Demographic models were plotted using the \texttt{demography} package written for Python
+(\url{https://github.com/apragsdale/demography}, ver.~0.0.3). The \texttt{demography} package
+allows users to define a demographic model as a directed acyclic graph using
+\texttt{networkx}~\citep{hagberg2008exploring} which can be plotted as in Figures 1A,B and 2A.
+\texttt{demography} also can also translate the graph-based demography into \texttt{msprime} input
+commands or simulate the allele frequency spectrum or two-locus statistics using 
+\texttt{moments}~\citep{jouganous2017inferring, ragsdale2019models}
+or \texttt{dadi}~\citep{gutenkunst2009inferring}.
+
+
+For the analysis of polygenic risk, we used the original pipeline
+from~\citet{martin2017human} available from
 \url{https://github.com/armartin/ancestry_pipeline/blob/master/simulate_prs.py}.
 We updated the pipeline to run with the correct demographic parameters and more
 recent versions of \msprime\ and \tskit, and the updated pipeline is
@@ -393,6 +409,10 @@ by the poor design decisions in \msprime's demography API.
     the three populations (C, D), and while risk prediction in the African and East Asian populations is
     still reduced compared to the European population, the reduction in prediction accuracy is not as
     large as reported in the original study (E-G).
+    Panels B and C show the distribution of true and inferred PRS after standardizing PRS across all individuals
+    in the simulation (this is in contrast to Figure 5 in Martin et al., which plotted unstandardized PRS). Because
+    the polygenic trait was simulated as a threshold trait, it is the relative distribution of PRS across indivuduals
+    that determined cases and controls instead of absolute true or inferred PRS.
     Panel D shows a comparison of PRS distributions for a simulation replicate with 1,000 causal variants.
     For each population in the violin plots, the original correlations from~\citet{martin2017human}
     are shown on the left, and correlations using the correct model are shown on the right.

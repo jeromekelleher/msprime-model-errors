@@ -109,9 +109,9 @@ if __name__ == "__main__":
     ))
 
     # population colors, to match Martin et al
-    yri_color = palettes.Category10[5][3]
-    ceu_color = palettes.Category10[5][0]
-    chb_color = palettes.Category10[5][4]
+    yri_color = palettes.Paired[10][5]
+    ceu_color = palettes.Paired[10][1]
+    chb_color = palettes.Paired[10][9]
 
     fig = plt.figure(1, figsize=(6.5, 6))
     fig.clf()
@@ -208,9 +208,9 @@ if __name__ == "__main__":
     fig.text(0.5, 0.98, 'B', fontsize=9, ha='center', va='center')
     fig.text(0.025, 0.65, 'C', fontsize=9, ha='center', va='center')
     fig.text(0.525, 0.65, 'D', fontsize=9, ha='center', va='center')
-    fig.text(0.025, 0.315, 'E', fontsize=9, ha='center', va='center')
-    fig.text(0.35, 0.315, 'F', fontsize=9, ha='center', va='center')
-    fig.text(0.675, 0.315, 'G', fontsize=9, ha='center', va='center')
+    fig.text(0.025, 0.32, 'E', fontsize=9, ha='center', va='center')
+    fig.text(0.35, 0.32, 'F', fontsize=9, ha='center', va='center')
+    fig.text(0.675, 0.32, 'G', fontsize=9, ha='center', va='center')
 
     #fig.tight_layout()
     fig.subplots_adjust(wspace=1.5, hspace=0.4, right=0.975, left=0.1, top=0.975, bottom=.08)
