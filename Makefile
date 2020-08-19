@@ -1,7 +1,7 @@
 paper.pdf: paper.tex paper.bib
-	pdflatex paper.tex
+	pdflatex -shell-escape paper.tex
 	bibtex paper
-	pdflatex paper.tex
+	pdflatex -shell-escape paper.tex
 
 paper.ps: paper.dvi
 	dvips paper
