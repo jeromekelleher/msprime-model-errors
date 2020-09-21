@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage{minted}
+\usepackage{tcolorbox}
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{minted}{\begin{tcolorbox}}%
+\AfterEndEnvironment{minted}{\end{tcolorbox}}%
+\usepackage{url}
+
+\usepackage[
+    paperwidth=4.5in, % 27 pica for two column width in AJHG
+    paperheight=7.5in,
+    left=0.15in,
+    right=0.075in,
+    top=0.075in,
+    bottom=0.05in
+]{geometry}
+
+\begin{document}
+
+\begin{minted}[fontsize=\footnotesize]{tcsh}
+-n 1 1.682020 -n 2 3.736830 -n 3 7.292050
+-eg 0 2 116.010723 -eg 0 3 160.246047
+-ma x 0.881098 0.561966 0.881098 x 2.797460 0.561966 2.797460 x
+-ej 0.028985 3 2 -en 0.028985 2 0.287184
+-ema 0.028985 3 x 7.293140 x 7.293140 x x x x x
+-ej 0.197963 2 1 -en 0.303501 1 1
+\end{minted}
+
+\begin{minted}[linenos,highlightlines={16,17},numbersep=5pt,fontsize=\footnotesize]{python}
+demographic_events = [
+    # CEU and CHB merge into B with rate changes at T_EU_AS
+    msprime.MassMigration(
+        time=T_EU_AS, source=2, destination=1, proportion=1.0),
+    msprime.MigrationRateChange(time=T_EU_AS, rate=0),
+    msprime.MigrationRateChange(
+        time=T_EU_AS, rate=m_AF_B, matrix_index=(0, 1)),
+    msprime.MigrationRateChange(
+        time=T_EU_AS, rate=m_AF_B, matrix_index=(1, 0)),
+    msprime.PopulationParametersChange(
+        time=T_EU_AS, initial_size=N_B, growth_rate=0,
+        population_id=1),
+    # Population B merges into YRI at T_B
+    msprime.MassMigration(
+        time=T_B, source=1, destination=0, proportion=1.0),
+    # Missing in msprime documentation
+    msprime.MigrationRateChange(time=T_B, rate=0),
+    # Size changes to N_A at T_AF
+    msprime.PopulationParametersChange(
+        time=T_AF, initial_size=N_A, population_id=0)
+]
+\end{minted}
+
+\begin{minted}[highlightlines={9},fontsize=\footnotesize]{python}
+dbg = msprime.DemographyDebugger(
+  population_configurations=population_configurations,
+  demographic_events=demographic_events,
+  migration_matrix=migration_matrix)
+dbg.print_history()
+ts = msprime.simulate(
+  ..., # parameters defining samples, sequence length, etc
+  population_configurations=population_configurations,
+  demographic_events=demographic_events, # Missing in Ref. 11
+  migration_matrix=migration_matrix)
+\end{minted}
+
+\begin{minted}[fontsize=\footnotesize]{python}
+demography = msprime.Demography(
+  populations=populations,
+  events=demographic_events,
+  migration_matrix=migration_matrix)
+dbg = demography.debug()
+dbg.print_history()
+ts = msprime.simulate(
+  ..., # parameters defining samples, sequence length, etc
+  demography=demography)
+\end{minted}
+
+\end{document}

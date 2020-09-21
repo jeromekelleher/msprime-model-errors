@@ -192,7 +192,7 @@ if __name__ == "__main__":
     ax5.scatter(violin_positions, medians, marker=".", color='white', s=8, zorder=3)
     ax5.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=3)
     
-    quartile1, medians, quartile3 = np.array([np.percentile(d, [5, 50, 95]) for d in data]).T
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [2.5, 50, 97.5]) for d in data]).T
     ax5.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=1)
 
     labels = ['AFR','EAS','EUR']
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     ax6.scatter(violin_positions, medians, marker=".", color='white', s=8, zorder=3)
     ax6.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=3)
     
-    quartile1, medians, quartile3 = np.array([np.percentile(d, [5, 50, 95]) for d in data]).T
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [2.5, 50, 97.5]) for d in data]).T
     ax6.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=1)
 
     labels = ['AFR','EAS','EUR']
@@ -267,7 +267,7 @@ if __name__ == "__main__":
     ax7.scatter(violin_positions, medians, marker=".", color='white', s=8, zorder=3)
     ax7.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=3)
     
-    quartile1, medians, quartile3 = np.array([np.percentile(d, [5, 50, 95]) for d in data]).T
+    quartile1, medians, quartile3 = np.array([np.percentile(d, [2.5, 50, 97.5]) for d in data]).T
     ax7.vlines(violin_positions, quartile1, quartile3, color='black', linestyle='-', lw=1)
 
     labels = ['AFR','EAS','EUR']
@@ -288,5 +288,5 @@ if __name__ == "__main__":
     fig.text(0.685, 0.45, 'G', fontsize=9, ha='center', va='center')
 
     fig.tight_layout()
-    plt.savefig('../figures/prs_fig.pdf', dpi=300)
+    plt.savefig('../prs_fig.pdf', dpi=300)
     plt.show()
